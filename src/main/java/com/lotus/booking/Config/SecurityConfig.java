@@ -38,6 +38,7 @@ public class SecurityConfig {
                 fl.usernameParameter("username").passwordParameter("password"));
         http.authorizeHttpRequests(auth->{
             auth.requestMatchers("/auth/login").permitAll();
+            auth.requestMatchers("/auth/save").permitAll();
             auth.requestMatchers("/products").hasAnyRole("USER");
             auth.anyRequest().authenticated();
         });

@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/products")
+@CrossOrigin(exposedHeaders = {"Authorization","Access-Control-Allow-Origin"},origins = "https://lotus-ui.web.app")
 public class ProductApi {
 
     @Autowired

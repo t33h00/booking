@@ -32,8 +32,7 @@ public class SecurityConfig {
     private JwtFilter jwtFilter;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf->csrf.disable());
-        http.cors(cors-> cors.disable());
+        http.csrf(csrf->csrf.disable());g
         http.formLogin(fl->
                 fl.usernameParameter("username").passwordParameter("password"));
         http.authorizeHttpRequests(auth->{
@@ -45,6 +44,7 @@ public class SecurityConfig {
         http.exceptionHandling(exception-> exception.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED,authException.getMessage())));
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+//        http.requiresChannel(re->re.requestMatchers(r->r.getHeader("X-Forwarded-Proto") !=null).requiresSecure());
         return http.build();
 
     }

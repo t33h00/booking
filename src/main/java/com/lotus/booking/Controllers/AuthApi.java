@@ -3,7 +3,6 @@ package com.lotus.booking.Controllers;
 import com.lotus.booking.Config.JwtUtil;
 import com.lotus.booking.DTO.AuthenicationRequest;
 import com.lotus.booking.DTO.AuthenticationResponse;
-import com.lotus.booking.Entity.Role;
 import com.lotus.booking.Entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
 @RestController
-@CrossOrigin(exposedHeaders = {"Authorization"},origins = "*")
+@CrossOrigin(exposedHeaders = {"Authorization","Access-Control-Allow-Origin"},origins = "https://lotus-ui.web.app")
 public class AuthApi {
     @Autowired
     private AuthenticationManager authenticationManager;

@@ -20,8 +20,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
@@ -34,10 +32,14 @@ public class SecurityConfig {
     private UserRepository userRepository;
     @Autowired
     private JwtFilter jwtFilter;
+
+    @Autowired
+    private WebConfig webConfig;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.formLogin(fl->
                 fl.usernameParameter("username").passwordParameter("password"));
+        http.csrf(csrf->csrf.disable());
         http.cors(c->c.configurationSource(corsConfigurationSource()));
         http.authorizeHttpRequests(auth->{
             auth.requestMatchers("/auth/login").permitAll();

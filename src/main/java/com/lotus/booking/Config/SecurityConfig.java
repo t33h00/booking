@@ -33,8 +33,6 @@ public class SecurityConfig {
     @Autowired
     private JwtFilter jwtFilter;
 
-    @Autowired
-    private WebConfig webConfig;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.formLogin(fl->
@@ -76,9 +74,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("https://lotus-ui.web.app");
+        configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
+        configuration.addExposedHeader("*");
+        configuration.getExposedHeaders();
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new
                 UrlBasedCorsConfigurationSource();

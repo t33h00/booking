@@ -9,13 +9,10 @@ import com.lotus.booking.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
 import java.util.List;
 
 @RestController
-@CrossOrigin(exposedHeaders = {"Authorization","Access-Control-Allow-Origin","Access-Control-Allow-Credentials"},
-        origins = {"https://lotus-ui.web.app", "http://localhost:3000"},maxAge = 3600)
+@CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"}, maxAge = 3600)
 @RequestMapping("/api")
 public class TransactionApi {
     @Autowired

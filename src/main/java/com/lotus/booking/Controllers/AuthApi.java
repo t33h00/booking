@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
 @RestController
-@CrossOrigin(exposedHeaders = {"Authorization","Access-Control-Allow-Origin","Access-Control-Allow-Credentials"},
-        origins = {"https://lotus-ui.web.app", "http://localhost:3000"},maxAge = 3600)
+@CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin"}, maxAge = 3600)
 public class AuthApi {
     @Autowired
     private AuthenticationManager authenticationManager;

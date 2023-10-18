@@ -13,8 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/products")
-@CrossOrigin(exposedHeaders = {"Authorization","Access-Control-Allow-Origin","Access-Control-Allow-Credentials"},
-        origins = {"https://lotus-ui.web.app", "http://localhost:3000"},maxAge = 3600)
+@CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"}, maxAge = 3600)
 public class ProductApi {
 
     @Autowired

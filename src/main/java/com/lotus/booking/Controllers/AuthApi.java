@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
 @RestController
-@CrossOrigin(exposedHeaders = {"Authorization","Access-Control-Allow-Origin"},origins = "https://lotus-ui.web.app")
+@CrossOrigin(exposedHeaders = {"Authorization","Access-Control-Allow-Origin"},origins = {"https://lotus-ui.web.app", "http://localhost:3000"})
 public class AuthApi {
     @Autowired
     private AuthenticationManager authenticationManager;

@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@CrossOrigin(exposedHeaders = {"Authorization","Access-Control-Allow-Origin"},origins = "https://lotus-ui.web.app")
+@CrossOrigin(exposedHeaders = {"Authorization","Access-Control-Allow-Origin"},origins = {"https://lotus-ui.web.app", "http://localhost:3000"})
 @RequestMapping("/api")
 public class TransactionApi {
     @Autowired

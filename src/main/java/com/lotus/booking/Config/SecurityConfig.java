@@ -74,7 +74,6 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("https://t33h00-lotus-82387cb18089.herokuapp.com");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");

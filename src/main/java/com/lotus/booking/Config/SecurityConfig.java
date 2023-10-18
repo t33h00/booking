@@ -39,8 +39,6 @@ public class SecurityConfig {
     private JwtFilter jwtFilter;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf->csrf.disable());
-        http.cors(c->c.disable());
         http.formLogin(fl->
                 fl.usernameParameter("username").passwordParameter("password"));
         http.authorizeHttpRequests(auth->{

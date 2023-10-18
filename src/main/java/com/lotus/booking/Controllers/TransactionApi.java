@@ -14,29 +14,29 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@CrossOrigin(exposedHeaders = {"Authorization","Access-Control-Allow-Origin","Access-Control-Allow-Credentials"})
+@CrossOrigin(exposedHeaders = {"Authorization","Access-Control-Allow-Origin","Access-Control-Allow-Credentials"},origins = {"https://lotus-ui.web.app", "http://localhost:3000"})
 @RequestMapping("/api")
 public class TransactionApi {
     @Autowired
     private TransactionService transactionService;
     @Autowired
     private UserService userService;
-    @CrossOrigin(origins = {"https://lotus-ui.web.app", "http://localhost:3000"})
+
     @PostMapping("/transaction")
     public Transaction saveTransaction(@AuthenticationPrincipal User user,@RequestBody Transaction transaction){
         return transactionService.saveTransaction(user, transaction);
     }
-    @CrossOrigin(origins = {"https://lotus-ui.web.app", "http://localhost:3000"})
+
     @GetMapping("/findbydate")
     public List<Transaction> findAllTransactionByDate(@AuthenticationPrincipal User user,TransactionRequest transactionRequest){
         return transactionService.findTransactionByUserIDAndDate(user, transactionRequest);
     }
-    @CrossOrigin(origins = {"https://lotus-ui.web.app", "http://localhost:3000"})
+
     @GetMapping("/findall")
     public List<Transaction> findAllById(@AuthenticationPrincipal User user){
         return transactionService.findAllById(user);
     }
-    @CrossOrigin(origins = {"https://lotus-ui.web.app", "http://localhost:3000"})
+
     @GetMapping("/calendarview")
     public List<TranResponse> customView(@AuthenticationPrincipal User user){
         return transactionService.customTransactions(user);

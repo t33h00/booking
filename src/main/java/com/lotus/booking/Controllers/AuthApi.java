@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Set;
 
 @RestController
-@CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin"}, maxAge = 3600)
+@CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin"}, origins = "https://t33h00-lotus-82387cb18089.herokuapp.com" ,maxAge = 3600)
 public class AuthApi {
     @Autowired
     private AuthenticationManager authenticationManager;

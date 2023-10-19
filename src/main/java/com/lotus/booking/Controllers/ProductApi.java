@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/products")
-@CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"}, origins = "https://t33h00-lotus-82387cb18089.herokuapp.com",  maxAge = 3600)
+@CrossOrigin(maxAge = 3600)
 public class ProductApi {
 
     @Autowired

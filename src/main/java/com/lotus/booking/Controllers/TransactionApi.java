@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(exposedHeaders = {"Access-Control-Allow-Origin","Access-Control-Allow-Credentials"}, origins = "https://t33h00-lotus-82387cb18089.herokuapp.com", maxAge = 3600)
+@CrossOrigin(maxAge = 3600)
 @RequestMapping("/api")
 public class TransactionApi {
     @Autowired

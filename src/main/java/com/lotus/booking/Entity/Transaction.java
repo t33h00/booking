@@ -22,6 +22,7 @@ public class Transaction {
     private int tip;
     private String note;
     private String date;
+    private int count;
 
     @ManyToOne(optional = false)
     private User user;

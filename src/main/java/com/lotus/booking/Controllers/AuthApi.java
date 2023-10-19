@@ -19,7 +19,6 @@ import java.util.Set;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
-        //"Authorization",
 
 public class AuthApi {
     @Autowired

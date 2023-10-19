@@ -18,7 +18,9 @@ public class Transaction {
     private Long id;
     private String name;
     private Double amount;
-    private int serviceCount;
+    private String payBy;
+    private int tip;
+    private String note;
     private String date;
 
     @ManyToOne(optional = false)

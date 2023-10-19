@@ -19,8 +19,10 @@ public class TransactionServiceImpl implements TransactionService{
         Transaction newTrans = new Transaction();
         newTrans.setName(transaction.getName());
         newTrans.setAmount(transaction.getAmount());
-        newTrans.setServiceCount(transaction.getServiceCount());
+        newTrans.setPayBy(transaction.getPayBy());
+        newTrans.setTip(transaction.getTip());
         newTrans.setDate(transaction.getDate());
+        newTrans.setNote(transaction.getNote());
         newTrans.setUser(user);
         transactionRepository.save(newTrans);
         return transaction;

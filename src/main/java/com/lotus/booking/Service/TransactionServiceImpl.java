@@ -1,11 +1,14 @@
 package com.lotus.booking.Service;
 
+import com.lotus.booking.DTO.TranDetailResponse;
 import com.lotus.booking.DTO.TranResponse;
 import com.lotus.booking.DTO.TransactionRequest;
+import com.lotus.booking.DTO.TransactionRequestById;
 import com.lotus.booking.Entity.Transaction;
 import com.lotus.booking.Entity.User;
 import com.lotus.booking.Repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,6 +50,31 @@ public class TransactionServiceImpl implements TransactionService{
     public List<TranResponse> customTransactions(User user) {
         Long user_id = user.getId();
         return transactionRepository.customListOfTransactions(user_id);
+    }
+
+    @Override
+    public TranDetailResponse findTransactionByUserIdAndId(User user, TransactionRequestById transactionRequestById) {
+        Long user_id = user.getId();
+        Long id = transactionRequestById.getId();
+        return transactionRepository.findTransactionByUserIdAndId(user_id, id);
+    }
+
+    public Transaction updateTransaction(Transaction transaction){
+        Transaction newTransaction = transactionRepository.findById(transaction.getId()).orElseThrow();
+        newTransaction.setName(transaction.getName());
+        newTransaction.setPayBy(transaction.getPayBy());
+        newTransaction.setAmount(transaction.getAmount());
+        newTransaction.setTip(transaction.getTip());
+        newTransaction.setCount(transaction.getCount());
+        newTransaction.setNote(transaction.getNote());
+        transactionRepository.save(newTransaction);
+        return newTransaction;
+    }
+
+    public String deleteTransaction(TransactionRequestById transactionRequestById){
+        Long id = transactionRequestById.getId();
+        transactionRepository.deleteById(id);
+        return "Deleted!";
     }
 
 }

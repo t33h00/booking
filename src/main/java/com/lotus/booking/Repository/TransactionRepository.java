@@ -1,5 +1,6 @@
 package com.lotus.booking.Repository;
 
+import com.lotus.booking.DTO.TranDetailResponse;
 import com.lotus.booking.DTO.TranResponse;
 import com.lotus.booking.Entity.Transaction;
 
@@ -20,5 +21,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     @Query(value=calendarView, nativeQuery = true)
     List<TranResponse> customListOfTransactions(Long user_id);
+    @Query(value="SELECT t.id, t.name, t.amount, t.pay_by, t.tip, t.count, t.note, t.date FROM Transactions t WHERE t.user_Id = ?1 AND t.id = ?2", nativeQuery = true)
+    TranDetailResponse findTransactionByUserIdAndId(Long user_id, Long id);
 
 }

@@ -1,8 +1,10 @@
 package com.lotus.booking.Service;
 
 import com.lotus.booking.Controllers.TransactionApi;
+import com.lotus.booking.DTO.TranDetailResponse;
 import com.lotus.booking.DTO.TranResponse;
 import com.lotus.booking.DTO.TransactionRequest;
+import com.lotus.booking.DTO.TransactionRequestById;
 import com.lotus.booking.Entity.Transaction;
 import com.lotus.booking.Entity.User;
 
@@ -18,4 +20,9 @@ public interface TransactionService {
 
     List<TranResponse> customTransactions(User user);
 
+    TranDetailResponse findTransactionByUserIdAndId(User user, TransactionRequestById transactionRequestById);
+
+    Transaction updateTransaction(Transaction transaction);
+
+    String deleteTransaction(TransactionRequestById transactionRequestById);
 }

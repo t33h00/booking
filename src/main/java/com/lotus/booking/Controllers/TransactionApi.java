@@ -1,7 +1,9 @@
 package com.lotus.booking.Controllers;
 
+import com.lotus.booking.DTO.TranDetailResponse;
 import com.lotus.booking.DTO.TranResponse;
 import com.lotus.booking.DTO.TransactionRequest;
+import com.lotus.booking.DTO.TransactionRequestById;
 import com.lotus.booking.Entity.Transaction;
 import com.lotus.booking.Entity.User;
 import com.lotus.booking.Service.TransactionService;
@@ -38,6 +40,21 @@ public class TransactionApi {
     @GetMapping("/calendarview")
     public List<TranResponse> customView(@AuthenticationPrincipal User user){
         return transactionService.customTransactions(user);
+    }
+
+    @GetMapping("/transaction")
+    public TranDetailResponse findTransactionByUserIdAndId(@AuthenticationPrincipal User user, TransactionRequestById id){
+        return transactionService.findTransactionByUserIdAndId(user, id);
+    }
+
+    @PutMapping("/edittransaction")
+    public Transaction updateTransaction(@AuthenticationPrincipal User user, @RequestBody Transaction transaction){
+        return transactionService.updateTransaction(transaction);
+    }
+
+    @DeleteMapping("/deletetransaction")
+    public String deleteTransaction(@AuthenticationPrincipal User user,TransactionRequestById id){
+        return  transactionService.deleteTransaction(id);
     }
 
 }

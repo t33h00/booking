@@ -3,7 +3,9 @@ package com.lotus.booking.Controllers;
 import com.lotus.booking.Config.JwtUtil;
 import com.lotus.booking.DTO.AuthenicationRequest;
 import com.lotus.booking.DTO.AuthenticationResponse;
+import com.lotus.booking.DTO.TokenValidationRequest;
 import com.lotus.booking.Entity.User;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,7 +21,7 @@ import java.util.Set;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
-
+@RequestMapping("/auth")
 public class AuthApi {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -27,7 +29,7 @@ public class AuthApi {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Validated AuthenicationRequest authenicationRequest){
         try{
             Authentication authentication = authenticationManager.authenticate(
@@ -41,4 +43,13 @@ public class AuthApi {
         }
     }
 
+    @GetMapping("/token")
+    public ResponseEntity<?> tokenValidation(TokenValidationRequest tokenValidationRequest){
+        try{
+            Boolean isValidToken = true;
+            return ResponseEntity.ok(isValidToken);
+        } catch (ExpiredJwtException e){
+            return ResponseEntity.ok(false);
+        }
+    }
 }

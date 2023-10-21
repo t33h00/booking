@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
+import java.util.function.Function;
 
 @Component
 public class JwtUtil {
@@ -30,7 +30,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public boolean validateAccessToken(String token){
+    public Boolean validateAccessToken(String token){
         try{
             Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token);
             return true;
@@ -58,5 +58,22 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public <T> T getClaimFromToken(String token, Function<Claims,T> claimsResolver){
+        final Claims claims = getAllClaimsFromToken(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims getAllClaimsFromToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token).getBody();
+    }
+    public Date getExpirationDateFromToken(String token){
+        return getClaimFromToken(token, Claims::getExpiration);
+    }
+
+    private Boolean isTokenExpired(String token){
+        final Date expiration = getExpirationDateFromToken(token);
+        return expiration.before(new Date());
     }
 }

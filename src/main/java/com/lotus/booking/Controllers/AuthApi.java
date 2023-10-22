@@ -45,10 +45,8 @@ public class AuthApi {
 
     @GetMapping("/token")
     public ResponseEntity<?> tokenValidation(TokenValidationRequest tokenValidationRequest){
-        Boolean isValid = true;
-        jwtUtil.validateAccessToken(tokenValidationRequest.getToken());
         try{
-            jwtUtil.validateAccessToken(tokenValidationRequest.getToken());
+            Boolean isValid = jwtUtil.validateAccessToken(tokenValidationRequest.getToken());
             return ResponseEntity.ok(isValid);
         } catch (ExpiredJwtException e){
             return ResponseEntity.ok(false);

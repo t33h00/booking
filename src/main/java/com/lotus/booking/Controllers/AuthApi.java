@@ -6,6 +6,7 @@ import com.lotus.booking.DTO.AuthenticationResponse;
 import com.lotus.booking.DTO.TokenValidationRequest;
 import com.lotus.booking.Entity.User;
 import io.jsonwebtoken.ExpiredJwtException;
+import org.antlr.v4.runtime.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,11 +46,11 @@ public class AuthApi {
     }
 
     @GetMapping("/token")
-    public ResponseEntity<?> tokenValidation(TokenValidationRequest tokenValidationRequest){
+    public ResponseEntity<?> tokenValidation(@AuthenticationPrincipal User user, TokenValidationRequest tokenValidationRequest){
         try{
-            Boolean isValid = jwtUtil.validateAccessToken(tokenValidationRequest.getToken());
+            Boolean isValid = (jwtUtil.validateAccessToken(tokenValidationRequest.getToken()));
             return ResponseEntity.ok(isValid);
-        } catch (ExpiredJwtException e){
+        } catch (Exception e){
             return ResponseEntity.ok(false);
         }
     }

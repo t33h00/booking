@@ -15,7 +15,7 @@ import java.util.function.Function;
 public class JwtUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtil.class);
-    private static final long EXPIRE_DURATION = 5;
+    private static final long EXPIRE_DURATION = 24 * 60 * 60 * 1000;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -77,7 +77,7 @@ public class JwtUtil {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
-    private Boolean isTokenExpired(String token){
+    public Boolean isTokenExpired(String token){
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }

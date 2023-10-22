@@ -6,6 +6,7 @@ import io.jsonwebtoken.security.SignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.function.Function;
@@ -14,7 +15,7 @@ import java.util.function.Function;
 public class JwtUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtil.class);
-    private static final long EXPIRE_DURATION = 24 * 60 * 60 * 1000;
+    private static final long EXPIRE_DURATION = 5;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -60,6 +61,10 @@ public class JwtUtil {
                 .getBody();
     }
 
+    public String getUsernameFromToken(String token) {
+        return getClaimFromToken(token, Claims::getSubject);
+    }
+
     public <T> T getClaimFromToken(String token, Function<Claims,T> claimsResolver){
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
@@ -76,4 +81,5 @@ public class JwtUtil {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
+
 }

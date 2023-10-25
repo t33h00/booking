@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api")
 public class UserApi {
     @Autowired
     private UserService userService;
@@ -42,7 +42,7 @@ public class UserApi {
         }
     }
 
-    @GetMapping("/users")
+    @GetMapping("/admin/users")
     public List<User> getAllUsers(){
         return userService.findAllUser();
     }

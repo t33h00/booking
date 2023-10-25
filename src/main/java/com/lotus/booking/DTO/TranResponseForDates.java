@@ -4,4 +4,5 @@ public interface TranResponseForDates {
     Double getAmount();
     String getDate();
     int getCount();
+    int getTip();
 }

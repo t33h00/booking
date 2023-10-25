@@ -1,10 +1,7 @@
 package com.lotus.booking.DTO;
 
-public interface TranResponse {
+public interface TranResponseForDates {
     Double getAmount();
     String getDate();
-
-
-
-
+    int getCount();
 }

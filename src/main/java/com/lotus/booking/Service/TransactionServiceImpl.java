@@ -1,9 +1,6 @@
 package com.lotus.booking.Service;
 
-import com.lotus.booking.DTO.TranDetailResponse;
-import com.lotus.booking.DTO.TranResponse;
-import com.lotus.booking.DTO.TransactionRequest;
-import com.lotus.booking.DTO.TransactionRequestById;
+import com.lotus.booking.DTO.*;
 import com.lotus.booking.Entity.Transaction;
 import com.lotus.booking.Entity.User;
 import com.lotus.booking.Repository.TransactionRepository;
@@ -37,7 +34,14 @@ public class TransactionServiceImpl implements TransactionService{
         Long user_id = user.getId();
         String date = transactionRequest.getDate();
         return transactionRepository.findByUserIdAndDate(user_id, date);
+    }
 
+    @Override
+    public List<TranResponseForDates> getAllByCustomDate(User user, CustomDateTranRequest customDateTranRequest){
+        Long user_id = user.getId();
+        String date1 = customDateTranRequest.getDate1();
+        String date2 = customDateTranRequest.getDate2();
+        return transactionRepository.getTranByCustomDate(user_id,date1,date2);
     }
 
     @Override

@@ -1,9 +1,6 @@
 package com.lotus.booking.Controllers;
 
-import com.lotus.booking.DTO.TranDetailResponse;
-import com.lotus.booking.DTO.TranResponse;
-import com.lotus.booking.DTO.TransactionRequest;
-import com.lotus.booking.DTO.TransactionRequestById;
+import com.lotus.booking.DTO.*;
 import com.lotus.booking.Entity.Transaction;
 import com.lotus.booking.Entity.User;
 import com.lotus.booking.Service.TransactionService;
@@ -55,6 +52,11 @@ public class TransactionApi {
     @DeleteMapping("/deletetransaction")
     public String deleteTransaction(@AuthenticationPrincipal User user,TransactionRequestById id){
         return  transactionService.deleteTransaction(id);
+    }
+
+    @GetMapping("/customdate")
+    public List<TranResponseForDates> getAllByCustomDate(@AuthenticationPrincipal User user, CustomDateTranRequest customDateTranRequest){
+        return transactionService.getAllByCustomDate(user, customDateTranRequest);
     }
 
 }

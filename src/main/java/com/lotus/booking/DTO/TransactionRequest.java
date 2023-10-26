@@ -10,5 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionRequest {
+    private Long id;
     private String date;
+    private Long user_id;
 }

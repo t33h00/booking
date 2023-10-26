@@ -38,7 +38,7 @@ public class AuthApi {
                     new UsernamePasswordAuthenticationToken(authenicationRequest.getEmail(),authenicationRequest.getPassword()));
             User user = (User) authentication.getPrincipal();
             String accessToken = jwtUtil.generateAccessToken(user);
-            AuthenticationResponse authenticationResponse = new AuthenticationResponse(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(),user.getRoles());
+            AuthenticationResponse authenticationResponse = new AuthenticationResponse(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(),user.getAuthorities().toString());
             return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION,accessToken).body(authenticationResponse);
         } catch (BadCredentialsException exception){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

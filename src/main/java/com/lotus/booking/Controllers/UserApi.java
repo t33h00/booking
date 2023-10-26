@@ -35,7 +35,7 @@ public class UserApi {
             authenticationResponse.setEmail(newUser.getEmail());
             authenticationResponse.setFirstName(newUser.getFirstName());
             authenticationResponse.setLastName(newUser.getLastName());
-            authenticationResponse.setRoles(newUser.getRoles());
+            authenticationResponse.setAuthorities(newUser.getAuthorities().toString());
             return ResponseEntity.ok(authenticationResponse);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

@@ -37,7 +37,9 @@ public class SecurityConfig {
         http.cors(c->c.configurationSource(corsConfigurationSource()));
         http.authorizeHttpRequests(auth->{
             auth.requestMatchers("/auth/**").permitAll();
-            auth.requestMatchers("/products").hasAnyRole("USER");
+            auth.requestMatchers("/api/save").permitAll();
+            auth.requestMatchers("/products").hasAnyRole("USER","ADMIN");
+            auth.requestMatchers("/api/admin/**").hasAnyRole("ADMIN");
             auth.anyRequest().authenticated();
         });
         http.exceptionHandling(exception-> exception.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED,authException.getMessage())));

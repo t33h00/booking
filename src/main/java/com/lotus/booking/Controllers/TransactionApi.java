@@ -24,6 +24,7 @@ public class TransactionApi {
         return transactionService.saveTransaction(user, transaction);
     }
 
+    //get transaction details for selected date.
     @GetMapping("/findbydate")
     public List<Transaction> findAllTransactionByDate(@AuthenticationPrincipal User user,TransactionRequest transactionRequest){
         return transactionService.findTransactionByUserIDAndDate(user, transactionRequest);
@@ -57,6 +58,25 @@ public class TransactionApi {
     @GetMapping("/customdate")
     public List<TranResponseForDates> getAllByCustomDate(@AuthenticationPrincipal User user, CustomDateTranRequest customDateTranRequest){
         return transactionService.getAllByCustomDate(user, customDateTranRequest);
+    }
+
+    //ADMIN
+
+    //get transaction details for selected date.
+    @GetMapping("/admin/findbydate")
+    public List<Transaction> aFindAllTransactionByDate(@AuthenticationPrincipal User user,TransactionRequest transactionRequest){
+        return transactionService.aFindTransactionByUserIDAndDate(transactionRequest);
+    }
+
+    @GetMapping("/admin/calendarview")
+    public List<TranResponse> aCustomView(@AuthenticationPrincipal User user,TransactionRequest transactionRequest){
+        return transactionService.aCustomTransactions(transactionRequest);
+    }
+
+    //for Earning view, get all for each day
+    @GetMapping("/admin/customdate")
+    public List<TranResponseForDates> aGetAllByCustomDate(@AuthenticationPrincipal User user, CustomDateTranRequest customDateTranRequest){
+        return transactionService.aGetAllByCustomDate(customDateTranRequest);
     }
 
 }

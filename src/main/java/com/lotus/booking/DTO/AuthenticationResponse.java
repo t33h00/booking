@@ -4,6 +4,10 @@ import com.lotus.booking.Entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -14,6 +18,6 @@ public class AuthenticationResponse {
     private String email;
     private String firstName;
     private String lastName;
-    private Set<Role> roles;
+    private String authorities;
 
 }

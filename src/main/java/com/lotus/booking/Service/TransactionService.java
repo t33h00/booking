@@ -11,11 +11,15 @@ import java.util.List;
 public interface TransactionService {
     Transaction saveTransaction(User user, Transaction transaction);
 
+    //find trans detail by date
     List<Transaction> findTransactionByUserIDAndDate(User user, TransactionRequest transactionRequest);
+    List<Transaction> aFindTransactionByUserIDAndDate(TransactionRequest transactionRequest);
 
     List<Transaction> findAllById(User user);
 
+    //for calendar view sum amount for each date
     List<TranResponse> customTransactions(User user);
+    List<TranResponse> aCustomTransactions(TransactionRequest transactionRequest);
 
     TranDetailResponse findTransactionByUserIdAndId(User user, TransactionRequestById transactionRequestById);
 
@@ -24,4 +28,5 @@ public interface TransactionService {
     String deleteTransaction(TransactionRequestById transactionRequestById);
 
     List<TranResponseForDates> getAllByCustomDate(User user, CustomDateTranRequest customDateTranRequest);
+    List<TranResponseForDates> aGetAllByCustomDate(CustomDateTranRequest customDateTranRequest);
 }

@@ -37,8 +37,23 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
+    public List<Transaction> aFindTransactionByUserIDAndDate(TransactionRequest transactionRequest) {
+        Long user_id = transactionRequest.getId();
+        String date = transactionRequest.getDate();
+        return transactionRepository.findByUserIdAndDate(user_id, date);
+    }
+
+    @Override
     public List<TranResponseForDates> getAllByCustomDate(User user, CustomDateTranRequest customDateTranRequest){
         Long user_id = user.getId();
+        String date1 = customDateTranRequest.getDate1();
+        String date2 = customDateTranRequest.getDate2();
+        return transactionRepository.getTranByCustomDate(user_id,date1,date2);
+    }
+
+    @Override
+    public List<TranResponseForDates> aGetAllByCustomDate(CustomDateTranRequest customDateTranRequest) {
+        Long user_id = customDateTranRequest.getUser_id();
         String date1 = customDateTranRequest.getDate1();
         String date2 = customDateTranRequest.getDate2();
         return transactionRepository.getTranByCustomDate(user_id,date1,date2);
@@ -53,6 +68,11 @@ public class TransactionServiceImpl implements TransactionService{
     @Override
     public List<TranResponse> customTransactions(User user) {
         Long user_id = user.getId();
+        return transactionRepository.customListOfTransactions(user_id);
+    }
+    @Override
+    public List<TranResponse> aCustomTransactions(TransactionRequest transactionRequest) {
+        Long user_id = transactionRequest.getUser_id();
         return transactionRepository.customListOfTransactions(user_id);
     }
 

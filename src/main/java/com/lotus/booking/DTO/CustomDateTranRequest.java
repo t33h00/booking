@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomDateTranRequest {
+    private Long user_id;
     private String date1;
     private String date2;
 }

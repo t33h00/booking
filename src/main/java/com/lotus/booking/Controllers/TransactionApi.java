@@ -79,4 +79,9 @@ public class TransactionApi {
         return transactionService.aGetAllByCustomDate(customDateTranRequest);
     }
 
+    @GetMapping("/admin/report")
+    public List<TranResponseForDates> aCustomReportByDateAndUserId(CustomDateTranRequest customDateTranRequest){
+        return transactionService.aCustomReportByDateAndUserId(customDateTranRequest);
+    }
+
 }

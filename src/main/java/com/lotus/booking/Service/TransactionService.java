@@ -29,4 +29,7 @@ public interface TransactionService {
 
     List<TranResponseForDates> getAllByCustomDate(User user, CustomDateTranRequest customDateTranRequest);
     List<TranResponseForDates> aGetAllByCustomDate(CustomDateTranRequest customDateTranRequest);
+
+    List<TranResponseForDates> aCustomReportByDateAndUserId(CustomDateTranRequest customDateTranRequest);
+
 }

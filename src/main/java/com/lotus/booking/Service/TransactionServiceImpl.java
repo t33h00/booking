@@ -5,13 +5,13 @@ import com.lotus.booking.Entity.Transaction;
 import com.lotus.booking.Entity.User;
 import com.lotus.booking.Repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class TransactionServiceImpl implements TransactionService{
+
     @Autowired
     private TransactionRepository transactionRepository;
     @Override
@@ -57,6 +57,13 @@ public class TransactionServiceImpl implements TransactionService{
         String date1 = customDateTranRequest.getDate1();
         String date2 = customDateTranRequest.getDate2();
         return transactionRepository.getTranByCustomDate(user_id,date1,date2);
+    }
+
+    @Override
+    public List<TranResponseForDates> aCustomReportByDateAndUserId(CustomDateTranRequest customDateTranRequest) {
+        String date1 = customDateTranRequest.getDate1();
+        String date2 = customDateTranRequest.getDate2();
+        return transactionRepository.aCustomReportByDateAndUserId(date1,date2);
     }
 
     @Override

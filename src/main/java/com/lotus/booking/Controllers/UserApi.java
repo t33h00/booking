@@ -22,7 +22,7 @@ public class UserApi {
     private JwtFilter jwtFilter;
 
     @PostMapping("save")
-    public User saveUser(@RequestBody User user){
+    public String saveUser(@RequestBody User user){
         return userService.saveUser(user);
     }
 

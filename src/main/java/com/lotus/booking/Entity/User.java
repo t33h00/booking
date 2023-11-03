@@ -27,8 +27,8 @@ public class User implements UserDetails {
     @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE, message = "Please use valid email")
     private String email;
 
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
-            message = "password must be min 4 and max 12 length containing at least 1 uppercase, 1 lowercase, 1 special character and 1 digit ")
+//    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$",
+//            message = "password must be min 4 and max 12 length containing at least 1 uppercase, 1 lowercase, 1 special character and 1 digit ")
     private String password;
 
     private String firstName;
@@ -41,6 +41,10 @@ public class User implements UserDetails {
     )
     private Set<Role> roles = new HashSet<>();
 
+    private boolean isEnable;
+
+    private String verificationCode;
+
     public void addRole(Role role){
         this.roles.add(role);
     }
@@ -52,6 +56,14 @@ public class User implements UserDetails {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
         }
         return authorities;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
     }
 
     @Override
@@ -76,7 +88,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnable;
     }
 
 }

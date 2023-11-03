@@ -41,7 +41,7 @@ public class TransactionApi {
     }
 
     @GetMapping("/transaction")
-    public TranDetailResponse findTransactionByUserIdAndId(@AuthenticationPrincipal User user, TransactionRequestById id){
+    public TranDetailResponse findTransactionByUserIdAndId(@AuthenticationPrincipal User user, TransactionRequest id){
         return transactionService.findTransactionByUserIdAndId(user, id);
     }
 
@@ -51,7 +51,7 @@ public class TransactionApi {
     }
 
     @DeleteMapping("/deletetransaction")
-    public String deleteTransaction(@AuthenticationPrincipal User user,TransactionRequestById id){
+    public String deleteTransaction(@AuthenticationPrincipal User user,TransactionRequest id){
         return  transactionService.deleteTransaction(id);
     }
 

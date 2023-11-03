@@ -84,9 +84,9 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public TranDetailResponse findTransactionByUserIdAndId(User user, TransactionRequestById transactionRequestById) {
+    public TranDetailResponse findTransactionByUserIdAndId(User user, TransactionRequest transactionRequest) {
         Long user_id = user.getId();
-        Long id = transactionRequestById.getId();
+        Long id = transactionRequest.getId();
         return transactionRepository.findTransactionByUserIdAndId(user_id, id);
     }
 
@@ -102,8 +102,8 @@ public class TransactionServiceImpl implements TransactionService{
         return newTransaction;
     }
 
-    public String deleteTransaction(TransactionRequestById transactionRequestById){
-        Long id = transactionRequestById.getId();
+    public String deleteTransaction(TransactionRequest transactionRequest){
+        Long id = transactionRequest.getId();
         transactionRepository.deleteById(id);
         return "Deleted!";
     }

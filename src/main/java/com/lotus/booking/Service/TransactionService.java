@@ -21,11 +21,11 @@ public interface TransactionService {
     List<TranResponse> customTransactions(User user);
     List<TranResponse> aCustomTransactions(TransactionRequest transactionRequest);
 
-    TranDetailResponse findTransactionByUserIdAndId(User user, TransactionRequestById transactionRequestById);
+    TranDetailResponse findTransactionByUserIdAndId(User user, TransactionRequest transactionRequest);
 
     Transaction updateTransaction(Transaction transaction);
 
-    String deleteTransaction(TransactionRequestById transactionRequestById);
+    String deleteTransaction(TransactionRequest transactionRequest);
 
     List<TranResponseForDates> getAllByCustomDate(User user, CustomDateTranRequest customDateTranRequest);
     List<TranResponseForDates> aGetAllByCustomDate(CustomDateTranRequest customDateTranRequest);

@@ -1,13 +1,13 @@
 package com.lotus.booking.Controllers;
 
 import com.lotus.booking.Config.JwtUtil;
-import com.lotus.booking.DTO.AuthenicationRequest;
+import com.lotus.booking.DTO.AuthenticationRequest;
 import com.lotus.booking.DTO.AuthenticationResponse;
 import com.lotus.booking.DTO.TokenValidationRequest;
 import com.lotus.booking.Entity.User;
-import io.jsonwebtoken.ExpiredJwtException;
-import org.antlr.v4.runtime.Token;
+import com.lotus.booking.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,23 +19,23 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
-
 @RestController
 @CrossOrigin(maxAge = 3600)
 @RequestMapping("/auth")
 public class AuthApi {
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Validated AuthenicationRequest authenicationRequest){
+    public ResponseEntity<?> login(@RequestBody @Validated AuthenticationRequest authenticationRequest){
         try{
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authenicationRequest.getEmail(),authenicationRequest.getPassword()));
+                    new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
             User user = (User) authentication.getPrincipal();
             String accessToken = jwtUtil.generateAccessToken(user);
             AuthenticationResponse authenticationResponse = new AuthenticationResponse(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(),user.getAuthorities().toString());
@@ -52,6 +52,16 @@ public class AuthApi {
             return ResponseEntity.ok(isValid);
         } catch (Exception e){
             return ResponseEntity.ok(false);
+        }
+    }
+
+    @GetMapping("/verify")
+    public String verifyAccount(@Param("code") String code){
+        boolean verified = userService.verifyVerificationCode(code);
+        if( verified){
+            return "Success";
+        } else {
+            return "failed";
         }
     }
 }

@@ -1,15 +1,20 @@
 package com.lotus.booking.Controllers;
 
 import com.lotus.booking.Config.JwtFilter;
+import com.lotus.booking.Config.SecurityConfig;
 import com.lotus.booking.DTO.AuthenticationResponse;
 import com.lotus.booking.Entity.User;
 import com.lotus.booking.Service.UserService;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @RestController
@@ -22,8 +27,11 @@ public class UserApi {
     private JwtFilter jwtFilter;
 
     @PostMapping("save")
-    public String saveUser(@RequestBody User user){
-        return userService.saveUser(user);
+    public String saveUser(@RequestBody User user, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+        String siteURL = SecurityConfig.getSiteURL(request);
+        userService.saveUser(user);
+        userService.sendVerificationEmail(user, siteURL);
+        return "";
     }
 
     @GetMapping("/user/{id}")
@@ -46,4 +54,5 @@ public class UserApi {
     public List<User> getAllUsers(){
         return userService.findAllUser();
     }
+
 }

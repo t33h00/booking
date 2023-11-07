@@ -25,5 +25,6 @@ public class Transaction {
     private int count;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "user_id")
     private User user;
 }

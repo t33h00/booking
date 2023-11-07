@@ -12,10 +12,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -37,6 +35,7 @@ public class UserServiceImpl implements UserService{
             newUser.setFirstName(user.getFirstName());
             newUser.setLastName(user.getLastName());
             newUser.setEmail(user.getEmail());
+            newUser.setRole("USER");
             newUser.setPassword(passwordEncoder.encode(user.getPassword()));
             newUser.setEnable(false);
             userRepository.save(newUser);

@@ -24,7 +24,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(user.getId() + "," + user.getEmail())
                 .setIssuer("Lotus")
-                .claim("roles", user.getRoles().toString())
+                .claim("roles", user.getRole())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))
                 .signWith(SignatureAlgorithm.HS512, secret)

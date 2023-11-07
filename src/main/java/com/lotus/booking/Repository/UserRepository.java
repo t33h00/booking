@@ -16,7 +16,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query(value = "SELECT * FROM Users u WHERE u.verification_code = ?1",nativeQuery = true)
     public User findByVerificationCode(String code);
 
-    @Query(value="UPDATE Users u SET u.is_enable = 1 WHERE u.id = ?1",nativeQuery = true)
+    @Query(value="UPDATE Users SET is_enable = TRUE WHERE id = ?1",nativeQuery = true)
     @Modifying
     public void enable(Long id);
 }

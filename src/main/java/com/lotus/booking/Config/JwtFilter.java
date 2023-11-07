@@ -18,6 +18,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
 @Component
 public class JwtFilter extends OncePerRequestFilter {
     @Autowired
@@ -53,15 +54,17 @@ public class JwtFilter extends OncePerRequestFilter {
         String claimRoles = (String) claims.get("roles");
         claimRoles = claimRoles.replace("[","").replace("]","");
         System.out.println("claimRoles: " + claimRoles);
-        String[] roleNames = claimRoles.split(",");
-        for (String roleName : roleNames){
-            userDetails.addRole(new Role(roleName));
-        }
+        userDetails.setRole(claimRoles);
+//        String[] roleNames = claimRoles.split(",");
+//        for (String roleName : roleNames){
+//            userDetails.addRole(new Role(roleName));
+//        }
 
         String subject = (String) claims.get(Claims.SUBJECT);
         String[] subjectArray = subject.split(",");
         userDetails.setId(Long.parseLong(subjectArray[0]));
         userDetails.setEmail(subjectArray[1]);
+        System.out.println(userDetails);
         return userDetails;
     }
 

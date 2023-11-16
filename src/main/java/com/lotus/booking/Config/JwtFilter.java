@@ -55,10 +55,6 @@ public class JwtFilter extends OncePerRequestFilter {
         claimRoles = claimRoles.replace("[","").replace("]","");
         System.out.println("claimRoles: " + claimRoles);
         userDetails.setRole(claimRoles);
-//        String[] roleNames = claimRoles.split(",");
-//        for (String roleName : roleNames){
-//            userDetails.addRole(new Role(roleName));
-//        }
 
         String subject = (String) claims.get(Claims.SUBJECT);
         String[] subjectArray = subject.split(",");

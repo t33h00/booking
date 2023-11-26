@@ -8,7 +8,6 @@ import com.lotus.booking.Service.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -27,11 +27,17 @@ public class UserApi {
     private JwtFilter jwtFilter;
 
     @PostMapping("save")
-    public String saveUser(@RequestBody User user, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
-        String siteURL = SecurityConfig.getSiteURL(request);
-        userService.saveUser(user);
-        userService.sendVerificationEmail(user, siteURL);
-        return "";
+    public ResponseEntity<?> saveUser(@RequestBody User user, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
+        Optional<User> findUser = userService.findUserByEmail(user);
+        if (findUser.isPresent()){
+            return ResponseEntity.status(HttpStatus.FOUND).build();
+        } else{
+            String siteURL = SecurityConfig.getSiteURL(request);
+            userService.saveUser(user);
+            userService.sendVerificationEmail(user, siteURL);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+
     }
 
     @GetMapping("/user/{id}")

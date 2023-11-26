@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -28,23 +30,25 @@ public class UserServiceImpl implements UserService{
     private UserRepository userRepository;
     @Override
     public String saveUser(User user) throws ValidationException {
-        try{
-            User newUser = new User();
-            String verificationCode = RandomString.make(64);
-            newUser.setVerificationCode(verificationCode);
-            newUser.setFirstName(user.getFirstName());
-            newUser.setLastName(user.getLastName());
-            newUser.setEmail(user.getEmail());
-            newUser.setRole("USER");
-            newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-            newUser.setEnable(false);
-            userRepository.save(newUser);
-            return "user added.";
+            Long id = idGeneration();
+            try{
+                User newUser = new User();
+                String verificationCode = RandomString.make(64);
+                newUser.setVerificationCode(verificationCode);
+                newUser.setId(id);
+                newUser.setFirstName(user.getFirstName());
+                newUser.setLastName(user.getLastName());
+                newUser.setEmail(user.getEmail());
+                newUser.setRole("USER");
+                newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+                newUser.setEnable(false);
+                userRepository.save(newUser);
+                return "user added.";
 
-        } catch (ValidationException e){
-            System.out.println();
-            return (e.getMessage());
-        }
+            } catch (ValidationException e){
+                System.out.println();
+                return (e.getMessage());
+            }
     }
 
     public boolean verifyVerificationCode(String code){
@@ -84,6 +88,16 @@ public class UserServiceImpl implements UserService{
         helper.setText(mailContent,true);
 
         mailSender.send(message);
+    }
+
+    public Long idGeneration(){
+        Random rnd = new Random();
+        return rnd.nextLong(999999);
+    }
+    @Override
+    public Optional<User> findUserByEmail(User user){
+        Optional<User> findUser = userRepository.findByEmail(user.getEmail());
+        return findUser;
     }
 
 }

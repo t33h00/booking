@@ -39,6 +39,9 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth->{
             auth.requestMatchers("/auth/**").permitAll();
             auth.requestMatchers("/api/save").permitAll();
+            auth.requestMatchers("/api/checkin").permitAll();
+            auth.requestMatchers("/api/list").permitAll();
+            auth.requestMatchers("/api/list/date").permitAll();
             auth.requestMatchers("/api/**").hasAnyRole("USER","ADMIN");
             auth.requestMatchers("/api/admin/**").hasRole("ADMIN");
             auth.anyRequest().authenticated();
@@ -73,6 +76,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("https://lotus-ui.web.app");
+        configuration.addAllowedOrigin("https://lotuscheckin.web.app");
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");

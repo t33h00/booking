@@ -26,4 +26,6 @@ public class CheckIn {
     private String request;
     @CreationTimestamp
     private Date date;
+    private boolean isServe;
+
 }

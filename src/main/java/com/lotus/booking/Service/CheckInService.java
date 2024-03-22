@@ -11,4 +11,6 @@ public interface CheckInService {
     public List<CheckIn> getAllCheckIn();
 
     List<CheckIn> findByDate(Date date);
+
+    String serve(Long id,boolean serve);
 }

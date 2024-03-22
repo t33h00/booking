@@ -34,6 +34,12 @@ public class CheckInServiceImpl implements CheckInService {
     public List<CheckIn> findByDate(Date date) {
         return checkInRepository.findByDate(date);
     }
+    @Override
+    public String serve(Long id, boolean serve){
+        checkInRepository.serve(id,serve);
+        CheckIn checkIn = checkInRepository.findById(id).orElseThrow();
+        return String.valueOf(checkIn.isServe());
+    }
 
 
 }

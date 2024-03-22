@@ -40,7 +40,7 @@ public class SecurityConfig {
             auth.requestMatchers("/auth/**").permitAll();
             auth.requestMatchers("/api/save").permitAll();
             auth.requestMatchers("/api/checkin").permitAll();
-            auth.requestMatchers("/api/list").permitAll();
+            auth.requestMatchers("/api/list/**").permitAll();
             auth.requestMatchers("/api/list/date").permitAll();
             auth.requestMatchers("/api/**").hasAnyRole("USER","ADMIN");
             auth.requestMatchers("/api/admin/**").hasRole("ADMIN");

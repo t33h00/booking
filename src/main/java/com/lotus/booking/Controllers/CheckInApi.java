@@ -1,7 +1,9 @@
 package com.lotus.booking.Controllers;
 
 import com.lotus.booking.Entity.CheckIn;
+import com.lotus.booking.Entity.Subscriber;
 import com.lotus.booking.Service.CheckInService;
+import com.lotus.booking.Service.SubscriberService;
 import org.hibernate.annotations.Check;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,9 +19,17 @@ public class CheckInApi {
     @Autowired
     private CheckInService checkInService;
 
+    @Autowired
+    private SubscriberService subscriberService;
+
     @PostMapping("/checkin")
     public String saveCheckIn(@RequestBody CheckIn checkIn){
         return checkInService.saveCheckInRecord(checkIn);
+    }
+
+    @PostMapping("/subscriber")
+    public Subscriber saveSubscriber(@RequestBody Subscriber subscriber){
+        return subscriberService.saveSubscriber(subscriber);
     }
 
     @GetMapping("/list")

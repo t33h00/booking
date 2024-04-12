@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
@@ -24,7 +25,7 @@ public class CheckInApi {
     private SubscriberService subscriberService;
 
     @PostMapping("/checkin")
-    public String saveCheckIn(@RequestBody CheckIn checkIn) throws FirebaseMessagingException {
+    public String saveCheckIn(@RequestBody CheckIn checkIn) throws FirebaseMessagingException, ExecutionException, InterruptedException {
         return checkInService.saveCheckInRecord(checkIn);
     }
 

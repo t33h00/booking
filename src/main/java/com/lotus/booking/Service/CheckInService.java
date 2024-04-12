@@ -5,9 +5,10 @@ import com.lotus.booking.Entity.CheckIn;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public interface CheckInService {
-    public String saveCheckInRecord(CheckIn checkIn) throws FirebaseMessagingException;
+    public String saveCheckInRecord(CheckIn checkIn) throws FirebaseMessagingException, ExecutionException, InterruptedException;
 
     public List<CheckIn> getAllCheckIn();
 

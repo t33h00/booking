@@ -1,10 +1,10 @@
 package com.lotus.booking.Service;
-
 import com.lotus.booking.Entity.CheckIn;
 import com.lotus.booking.Repository.CheckInRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +12,6 @@ import java.util.List;
 public class CheckInServiceImpl implements CheckInService {
     @Autowired
     private CheckInRepository checkInRepository;
-
     @Override
     public String saveCheckInRecord(CheckIn checkIn){
         CheckIn newCheckin = new CheckIn();

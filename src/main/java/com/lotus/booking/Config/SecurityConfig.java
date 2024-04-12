@@ -41,6 +41,7 @@ public class SecurityConfig {
             auth.requestMatchers("/api/save").permitAll();
             auth.requestMatchers("/api/checkin").permitAll();
             auth.requestMatchers("/api/subscriber").permitAll();
+            auth.requestMatchers("/api/notification/**").permitAll();
             auth.requestMatchers("/api/list/**").permitAll();
             auth.requestMatchers("/api/list/date").permitAll();
             auth.requestMatchers("/api/**").hasAnyRole("USER","ADMIN");

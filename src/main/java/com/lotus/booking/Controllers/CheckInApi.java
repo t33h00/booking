@@ -1,5 +1,6 @@
 package com.lotus.booking.Controllers;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.lotus.booking.Entity.CheckIn;
 import com.lotus.booking.Entity.Subscriber;
 import com.lotus.booking.Service.CheckInService;
@@ -23,7 +24,7 @@ public class CheckInApi {
     private SubscriberService subscriberService;
 
     @PostMapping("/checkin")
-    public String saveCheckIn(@RequestBody CheckIn checkIn){
+    public String saveCheckIn(@RequestBody CheckIn checkIn) throws FirebaseMessagingException {
         return checkInService.saveCheckInRecord(checkIn);
     }
 

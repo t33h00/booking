@@ -5,6 +5,8 @@ import com.lotus.booking.Repository.SubscriberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SubscriberService {
     @Autowired
@@ -14,5 +16,9 @@ public class SubscriberService {
         newSubscriber.setPlatform(subscriber.getPlatform());
         newSubscriber.setToken(subscriber.getToken());
         return subscriberRepository.save(newSubscriber);
+    }
+
+    public List<Subscriber> getAllSubscriber(){
+        return subscriberRepository.findAll();
     }
 }

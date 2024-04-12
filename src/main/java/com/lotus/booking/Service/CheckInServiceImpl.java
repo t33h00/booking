@@ -4,6 +4,7 @@ import com.lotus.booking.DTO.AllDevicesNotificationRequest;
 import com.lotus.booking.DTO.DeviceNotificationRequest;
 import com.lotus.booking.DTO.NotificationRequest;
 import com.lotus.booking.Entity.CheckIn;
+import com.lotus.booking.Entity.Subscriber;
 import com.lotus.booking.Repository.CheckInRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class CheckInServiceImpl implements CheckInService {
     private CheckInRepository checkInRepository;
     @Autowired
     NotificationService notificationService;
+    @Autowired
+    SubscriberService subscriberService;
+
     @Override
     public String saveCheckInRecord(CheckIn checkIn) throws ExecutionException, FirebaseMessagingException, InterruptedException {
         CheckIn newCheckin = new CheckIn();
@@ -30,9 +34,11 @@ public class CheckInServiceImpl implements CheckInService {
         newCheckin.setRequest(checkIn.getRequest());
         checkInRepository.save(newCheckin);
         if(checkIn.getService().contains("Face + wax")){
+            List<Subscriber> subscribers = subscriberService.getAllSubscriber();
             List<String> devices = new ArrayList<>();
-            devices.add("eSufGvN3emrSvB8CVwmsdK:APA91bG5Bja4qhYmj7UXHyftPvGZAJR3d3weBT960GVaH6WWESm2Rsx5gXRxSyp3HK6jMdaoUf6o5i8d4X3dAFm9H4OV0tbGDdzZKWKurSvmKuz7sK-XA5pDvk5k_6xeoB0-qN0GemaJ");
-            devices.add("dhYeewTKV7-dJo4iKArVYk:APA91bEdovKFKKu1yFjng5OAs6r8veqKjt-UFMVD0Z3aX12nZa4Z3qCgEARVvtGTXTZBLPC7ONJtvgqVbRk9VbXIcSCd19G6qx3WxjpcqYUDOfG_Ukrfqp6MFQU-vUgz9nAWHUq-bykw");
+            for(Subscriber sub : subscribers){
+                devices.add(sub.getToken());
+            }
             AllDevicesNotificationRequest request = new AllDevicesNotificationRequest();
             request.setTitle(checkIn.getService());
             request.setBody(checkIn.getName());

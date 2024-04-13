@@ -12,10 +12,15 @@ public class SubscriberService {
     @Autowired
     private SubscriberRepository subscriberRepository;
     public Subscriber saveSubscriber( Subscriber subscriber){
-        Subscriber newSubscriber = new Subscriber();
-        newSubscriber.setPlatform(subscriber.getPlatform());
-        newSubscriber.setToken(subscriber.getToken());
-        return subscriberRepository.save(newSubscriber);
+        try{
+            Subscriber newSubscriber = new Subscriber();
+            newSubscriber.setPlatform(subscriber.getPlatform());
+            newSubscriber.setToken(subscriber.getToken());
+            return subscriberRepository.save(newSubscriber);
+        } catch (Exception e){
+            System.out.println("Error: " + e);
+            return null;
+        }
     }
 
     public List<Subscriber> getAllSubscriber(){

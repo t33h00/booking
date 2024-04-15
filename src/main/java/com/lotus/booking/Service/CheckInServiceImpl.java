@@ -40,8 +40,8 @@ public class CheckInServiceImpl implements CheckInService {
                 devices.add(sub.getToken());
             }
             AllDevicesNotificationRequest request = new AllDevicesNotificationRequest();
-            request.setTitle(checkIn.getService());
-            request.setBody(checkIn.getName());
+            request.setTitle(checkIn.getService() + ", " + checkIn.getAppt());
+            request.setBody("Name: " + checkIn.getName());
             request.setDeviceTokenList(devices);
             request.setImageUrl("");
             notificationService.sendMulticastNotification(request);

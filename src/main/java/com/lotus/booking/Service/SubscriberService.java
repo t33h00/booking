@@ -26,4 +26,11 @@ public class SubscriberService {
     public List<Subscriber> getAllSubscriber(){
         return subscriberRepository.findAll();
     }
+
+    public String deleteSubscriber(String token){
+        Subscriber subscriber = subscriberRepository.findSubscriberByToken(token);
+        Long id = subscriber.getId();
+        subscriberRepository.deleteById(id);
+        return "Success!";
+    }
 }

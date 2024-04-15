@@ -7,6 +7,8 @@ import com.lotus.booking.DTO.AllDevicesNotificationRequest;
 import com.lotus.booking.DTO.DeviceNotificationRequest;
 import com.lotus.booking.DTO.NotificationSubscriptionRequest;
 import com.lotus.booking.DTO.TopicNotificationRequest;
+import com.lotus.booking.Entity.Subscriber;
+import com.lotus.booking.Repository.SubscriberRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 public class NotificationService {
     private final FirebaseApp firebaseApp;
+
+    private final SubscriberRepository subscriberRepository;
 
     public void sendNotificationToDevice(DeviceNotificationRequest request) throws FirebaseMessagingException, ExecutionException, InterruptedException {
         Message fcmMessage = Message.builder()
@@ -73,14 +77,19 @@ public class NotificationService {
                 .build();
 
         BatchResponse response = FirebaseMessaging.getInstance(firebaseApp).sendEachForMulticast(multicastMessage);
-        // Process the response
-        for (SendResponse sendResponse : response.getResponses()) {
-            if (sendResponse.isSuccessful()) {
-                log.info("Message sent successfully to: {}", sendResponse.getMessageId());
-            } else {
-                log.info("Failed to send message to: {}", sendResponse.getMessageId());
-                log.error("Error details: {}", sendResponse.getException().getMessage());
+        List<SendResponse> responses = response.getResponses();
+        List<String> failedToken = new ArrayList<>();
+        if(response.getFailureCount()>0){
+            for(int i=0;i< responses.size();i++){
+                if(!responses.get(i).isSuccessful()){
+                    failedToken.add(request.getDeviceTokenList().get(i));
+                }
             }
+        }
+        for (String s : failedToken) {
+            Subscriber subscriber =  subscriberRepository.findSubscriberByToken(s);
+            Long id = subscriber.getId();
+            subscriberRepository.deleteById(id);
         }
     }
 

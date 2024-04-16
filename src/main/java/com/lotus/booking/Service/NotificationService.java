@@ -108,8 +108,6 @@ public class NotificationService {
     }
 
     private List<String> getAllDeviceTokens() {
-        // Implement logic to retrieve all device tokens from your database or storage
-        // Return a list of device tokens
         return new ArrayList<>();
     }
 

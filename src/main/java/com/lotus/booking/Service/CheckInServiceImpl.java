@@ -1,15 +1,12 @@
 package com.lotus.booking.Service;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.lotus.booking.DTO.AllDevicesNotificationRequest;
-import com.lotus.booking.DTO.DeviceNotificationRequest;
-import com.lotus.booking.DTO.NotificationRequest;
 import com.lotus.booking.Entity.CheckIn;
 import com.lotus.booking.Entity.Subscriber;
 import com.lotus.booking.Repository.CheckInRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,10 +37,9 @@ public class CheckInServiceImpl implements CheckInService {
                 devices.add(sub.getToken());
             }
             AllDevicesNotificationRequest request = new AllDevicesNotificationRequest();
-            request.setTitle(checkIn.getService() + ", " + checkIn.getAppt());
+            request.setTitle(checkIn.getService() + " (" + checkIn.getAppt() + ")");
             request.setBody("Name: " + checkIn.getName());
             request.setDeviceTokenList(devices);
-            request.setImageUrl("");
             notificationService.sendMulticastNotification(request);
         }
         return newCheckin.getName();

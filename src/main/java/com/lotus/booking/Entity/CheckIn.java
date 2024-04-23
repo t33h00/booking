@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -24,8 +25,7 @@ public class CheckIn {
     private String service;
     private String appt;
     private String request;
-    @CreationTimestamp
-    private Date date;
+    private LocalDateTime date;
     private boolean isServe;
 
 }

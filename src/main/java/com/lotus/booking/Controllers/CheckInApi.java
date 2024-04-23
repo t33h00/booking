@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -40,7 +41,7 @@ public class CheckInApi {
     }
 
     @GetMapping("/list/date")
-    public List<CheckIn> findByDate(@RequestParam("date") @DateTimeFormat(pattern= "yyyy-MM-dd") Date date){
+    public List<CheckIn> findByDate(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date){
         return checkInService.findByDate(date);
     }
 

@@ -27,7 +27,7 @@ public class CheckInServiceImpl implements CheckInService {
     public String saveCheckInRecord(CheckIn checkIn) throws ExecutionException, FirebaseMessagingException, InterruptedException {
         ZoneId zoneId = ZoneId.of("US/Eastern");
         CheckIn newCheckin = new CheckIn();
-        newCheckin.setDate(LocalDateTime.now());
+        newCheckin.setDate(LocalDateTime.now(zoneId));
         newCheckin.setName(checkIn.getName());
         newCheckin.setPhone(checkIn.getPhone());
         newCheckin.setService(checkIn.getService());

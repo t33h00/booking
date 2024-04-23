@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +25,7 @@ public class CheckInServiceImpl implements CheckInService {
 
     @Override
     public String saveCheckInRecord(CheckIn checkIn) throws ExecutionException, FirebaseMessagingException, InterruptedException {
+        ZoneId zoneId = ZoneId.of("US/Eastern");
         CheckIn newCheckin = new CheckIn();
         newCheckin.setDate(LocalDateTime.now());
         newCheckin.setName(checkIn.getName());

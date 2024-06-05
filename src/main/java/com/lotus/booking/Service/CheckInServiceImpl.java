@@ -34,7 +34,7 @@ public class CheckInServiceImpl implements CheckInService {
         newCheckin.setAppt(checkIn.getAppt());
         newCheckin.setRequest(checkIn.getRequest());
         checkInRepository.save(newCheckin);
-        if(checkIn.getService().contains("Face+Wax")){
+        if(checkIn.getService().contains("Facial")){
             List<Subscriber> subscribers = subscriberService.getAllSubscriber();
             List<String> devices = new ArrayList<>();
             for(Subscriber sub : subscribers){

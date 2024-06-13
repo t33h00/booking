@@ -35,7 +35,7 @@ public class NotificationService {
                                 .setBody(request.getBody())
                                 .setImage(request.getImageUrl())
                                 .build()
-                )
+                ).setAndroidConfig(AndroidConfig.builder().setPriority(AndroidConfig.Priority.HIGH).build())
                 .putAllData(request.getData())
                 .build();
 
@@ -113,7 +113,7 @@ public class NotificationService {
 
     private AndroidConfig getAndroidConfig(String topic) {
         return AndroidConfig.builder()
-                .setTtl(Duration.ofMinutes(2).toMillis()).setCollapseKey(topic)
+                .setTtl(Duration.ofMinutes(0).toMillis()).setCollapseKey(topic)
                 .setPriority(AndroidConfig.Priority.HIGH)
                 .setNotification(AndroidNotification.builder().setSound("default")
                         .setColor("#FFFF00").setTag(topic).build()).build();
@@ -123,4 +123,5 @@ public class NotificationService {
         return ApnsConfig.builder()
                 .setAps(Aps.builder().setCategory(topic).setThreadId(topic).build()).build();
     }
+
 }

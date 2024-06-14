@@ -73,7 +73,8 @@ public class NotificationService {
                                 .setBody(request.getBody())
                                 .setImage(request.getImageUrl())
                                 .build()
-                )
+                ).setAndroidConfig(AndroidConfig.builder().setPriority(AndroidConfig.Priority.HIGH).build())
+                .setWebpushConfig(WebpushConfig.builder().putHeader("Urgency","high").build())
                 .putAllData(request.getData())
                 .build();
 

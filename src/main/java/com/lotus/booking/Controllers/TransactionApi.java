@@ -36,8 +36,8 @@ public class TransactionApi {
     }
 
     @GetMapping("/calendarview")
-    public List<TranResponse> customView(@AuthenticationPrincipal User user){
-        return transactionService.customTransactions(user);
+    public List<TranResponse> customView(@AuthenticationPrincipal User user, String date){
+        return transactionService.customTransactions(user,date);
     }
 
     @GetMapping("/transaction")

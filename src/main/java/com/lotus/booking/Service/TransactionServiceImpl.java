@@ -73,14 +73,15 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public List<TranResponse> customTransactions(User user) {
+    public List<TranResponse> customTransactions(User user, String date) {
         Long user_id = user.getId();
-        return transactionRepository.customListOfTransactions(user_id);
+        return transactionRepository.customListOfTransactions(user_id, date);
     }
     @Override
     public List<TranResponse> aCustomTransactions(TransactionRequest transactionRequest) {
         Long user_id = transactionRequest.getUser_id();
-        return transactionRepository.customListOfTransactions(user_id);
+        String date = transactionRequest.getDate();
+        return transactionRepository.customListOfTransactions(user_id, date);
     }
 
     @Override

@@ -18,7 +18,7 @@ public interface TransactionService {
     List<Transaction> findAllById(User user);
 
     //for calendar view sum amount for each date
-    List<TranResponse> customTransactions(User user);
+    List<TranResponse> customTransactions(User user, String date);
     List<TranResponse> aCustomTransactions(TransactionRequest transactionRequest);
 
     TranDetailResponse findTransactionByUserIdAndId(User user, TransactionRequest transactionRequest);

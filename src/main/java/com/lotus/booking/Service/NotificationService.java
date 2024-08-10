@@ -14,9 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 @Service
 @AllArgsConstructor
@@ -65,8 +63,11 @@ public class NotificationService {
 
 
     public void sendMulticastNotification(AllDevicesNotificationRequest request) throws FirebaseMessagingException {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("TTL", "3600");
+        headers.put("Urgency", "high");
         WebpushFcmOptions webpushFcmOptions = WebpushFcmOptions.builder().setLink("https://lotuscheckin.web.app/list").build();
-        WebpushConfig webpushConfig = WebpushConfig.builder().setFcmOptions(webpushFcmOptions).putHeader("Urgency", "high").build();
+        WebpushConfig webpushConfig = WebpushConfig.builder().setFcmOptions(webpushFcmOptions).putAllHeaders(headers).build();
 
         MulticastMessage multicastMessage = MulticastMessage.builder()
                 .addAllTokens(request.getDeviceTokenList().isEmpty() ? getAllDeviceTokens() : request.getDeviceTokenList())
@@ -77,7 +78,6 @@ public class NotificationService {
                                 .setImage(request.getImageUrl())
                                 .build())
                 .setWebpushConfig(webpushConfig)
-                .putData("Urgency","high")
                 .putAllData(request.getData())
                 .build();
 

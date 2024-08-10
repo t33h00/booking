@@ -65,9 +65,9 @@ public class NotificationService {
     public void sendMulticastNotification(AllDevicesNotificationRequest request) throws FirebaseMessagingException {
         Map<String, String> headers = new HashMap<>();
         headers.put("Urgency", "high");
-        headers.put("TTL", "3600");
+        AndroidConfig androidConfig = AndroidConfig.builder().setPriority(AndroidConfig.Priority.HIGH).build();
         WebpushFcmOptions webpushFcmOptions = WebpushFcmOptions.builder().setLink("https://lotuscheckin.web.app/list").build();
-        WebpushConfig webpushConfig = WebpushConfig.builder().setFcmOptions(webpushFcmOptions).putAllHeaders(headers).build();
+        WebpushConfig webpushConfig = WebpushConfig.builder().putAllHeaders(headers).build();
 
         MulticastMessage multicastMessage = MulticastMessage.builder()
                 .addAllTokens(request.getDeviceTokenList().isEmpty() ? getAllDeviceTokens() : request.getDeviceTokenList())
@@ -79,9 +79,10 @@ public class NotificationService {
                                 .setImage(request.getImageUrl())
                                 .build())
                 .putAllData(request.getData())
+                .setAndroidConfig(androidConfig)
                 .build();
 
-        BatchResponse response = FirebaseMessaging.getInstance(firebaseApp).sendEachForMulticast(multicastMessage);
+        BatchResponse response = (BatchResponse) FirebaseMessaging.getInstance(firebaseApp).sendEachForMulticastAsync(multicastMessage);
         List<SendResponse> responses = response.getResponses();
         List<String> failedToken = new ArrayList<>();
         if(response.getFailureCount()>0){

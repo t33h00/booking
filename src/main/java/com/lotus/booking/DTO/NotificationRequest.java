@@ -15,4 +15,10 @@ public class NotificationRequest {
     private String imageUrl;
     private String Urgency;
     private Map<String, String> data = new HashMap<>();
+
+    public Map<String, String> getData() {
+        data.put("title: ",this.title);
+        data.put("body: ", this.getBody());
+        return data;
+    }
 }

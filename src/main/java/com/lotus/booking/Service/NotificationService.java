@@ -67,7 +67,7 @@ public class NotificationService {
         headers.put("Urgency", "high");
         AndroidConfig androidConfig = AndroidConfig.builder().setPriority(AndroidConfig.Priority.HIGH).build();
         WebpushFcmOptions webpushFcmOptions = WebpushFcmOptions.builder().setLink("https://lotuscheckin.web.app/list").build();
-        WebpushConfig webpushConfig = WebpushConfig.builder().putAllHeaders(headers).build();
+        WebpushConfig webpushConfig = WebpushConfig.builder().putAllHeaders(headers).setFcmOptions(webpushFcmOptions).build();
 
         MulticastMessage multicastMessage = MulticastMessage.builder()
                 .addAllTokens(request.getDeviceTokenList().isEmpty() ? getAllDeviceTokens() : request.getDeviceTokenList())
@@ -82,7 +82,7 @@ public class NotificationService {
                 .setAndroidConfig(androidConfig)
                 .build();
 
-        BatchResponse response = (BatchResponse) FirebaseMessaging.getInstance(firebaseApp).sendEachForMulticastAsync(multicastMessage);
+        BatchResponse response = FirebaseMessaging.getInstance(firebaseApp).sendEachForMulticast(multicastMessage);
         List<SendResponse> responses = response.getResponses();
         List<String> failedToken = new ArrayList<>();
         if(response.getFailureCount()>0){

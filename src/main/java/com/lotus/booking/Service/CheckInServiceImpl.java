@@ -12,6 +12,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -41,6 +42,7 @@ public class CheckInServiceImpl implements CheckInService {
                 devices.add(sub.getToken());
             }
             AllDevicesNotificationRequest request = new AllDevicesNotificationRequest();
+            request.setData(Map.of(checkIn.getName(),checkIn.getPhone()));
             request.setTitle(checkIn.getService() + " (" + checkIn.getAppt() + ")");
             request.setBody("Name: " + checkIn.getName());
             request.setDeviceTokenList(devices);

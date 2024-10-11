@@ -99,6 +99,7 @@ public class TransactionServiceImpl implements TransactionService{
         newTransaction.setTip(transaction.getTip());
         newTransaction.setCount(transaction.getCount());
         newTransaction.setNote(transaction.getNote());
+        newTransaction.setDate(transaction.getDate());
         transactionRepository.save(newTransaction);
         return newTransaction;
     }

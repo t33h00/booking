@@ -7,6 +7,7 @@ import com.lotus.booking.Service.TransactionService;
 import com.lotus.booking.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -28,6 +29,11 @@ public class TransactionApi {
     @GetMapping("/findbydate")
     public List<Transaction> findAllTransactionByDate(@AuthenticationPrincipal User user,TransactionRequest transactionRequest){
         return transactionService.findTransactionByUserIDAndDate(user, transactionRequest);
+    }
+
+    @GetMapping("/findbydate/{date}")
+    public List<Transaction> findAllTransactionByDateParam(@AuthenticationPrincipal User user,@PathVariable("date") String date){
+        return transactionService.findTransactionByUserIDAndDateA(user, date);
     }
 
     @GetMapping("/findall")

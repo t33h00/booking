@@ -37,6 +37,12 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
+    public List<Transaction> findTransactionByUserIDAndDateA(User user, String date) {
+        Long user_id = user.getId();
+        return transactionRepository.findByUserIdAndDate(user_id, date);
+    }
+
+    @Override
     public List<Transaction> aFindTransactionByUserIDAndDate(TransactionRequest transactionRequest) {
         Long user_id = transactionRequest.getId();
         String date = transactionRequest.getDate();

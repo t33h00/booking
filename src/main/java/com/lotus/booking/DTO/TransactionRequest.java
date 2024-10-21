@@ -13,4 +13,10 @@ public class TransactionRequest {
     private Long id;
     private String date;
     private Long user_id;
+
+    @Override
+    public String toString() {
+        return date ;
+    }
 }
+

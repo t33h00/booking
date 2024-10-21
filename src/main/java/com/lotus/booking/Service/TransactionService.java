@@ -13,6 +13,9 @@ public interface TransactionService {
 
     //find trans detail by date
     List<Transaction> findTransactionByUserIDAndDate(User user, TransactionRequest transactionRequest);
+
+    List<Transaction> findTransactionByUserIDAndDateA(User user, String date);
+
     List<Transaction> aFindTransactionByUserIDAndDate(TransactionRequest transactionRequest);
 
     List<Transaction> findAllById(User user);

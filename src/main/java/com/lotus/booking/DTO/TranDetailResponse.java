@@ -6,7 +6,7 @@ public interface TranDetailResponse {
     Long getId();
     String getName();
     Double getAmount();
-    String getPay_by();
+    String getBy();
     BigDecimal getTip();
     String getNote();
     String getDate();

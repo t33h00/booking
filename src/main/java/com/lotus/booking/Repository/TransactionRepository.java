@@ -22,7 +22,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     @Query(value=calendarView, nativeQuery = true)
     List<TranResponse> customListOfTransactions(Long user_id, String date);
-    @Query(value="SELECT t.id, t.name, t.amount, t.pay_by, t.tip, t.count, t.note, t.date FROM Transactions t WHERE t.user_Id = ?1 AND t.id = ?2", nativeQuery = true)
+    @Query(value="SELECT t.id, t.name, t.amount, t.by, t.tip, t.count, t.note, t.date FROM Transactions t WHERE t.user_Id = ?1 AND t.id = ?2", nativeQuery = true)
     TranDetailResponse findTransactionByUserIdAndId(Long user_id, Long id);
 
     @Query(value="SELECT SUM(t.amount) as amount, SUM(t.count) as count,SUM(t.tip) as tip, t.date FROM Transactions t WHERE t.user_id =?1 AND t.date BETWEEN ?2 AND ?3 GROUP BY t.date ORDER by t.date ASC;",nativeQuery = true)

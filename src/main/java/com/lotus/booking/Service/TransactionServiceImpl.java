@@ -19,7 +19,7 @@ public class TransactionServiceImpl implements TransactionService{
         Transaction newTrans = new Transaction();
         newTrans.setName(transaction.getName());
         newTrans.setAmount(transaction.getAmount());
-        newTrans.setPayBy(transaction.getPayBy());
+        newTrans.setBy(transaction.getBy());
         newTrans.setTip(transaction.getTip());
         newTrans.setCount(transaction.getCount());
         newTrans.setDate(transaction.getDate());
@@ -100,7 +100,7 @@ public class TransactionServiceImpl implements TransactionService{
     public Transaction updateTransaction(Transaction transaction){
         Transaction newTransaction = transactionRepository.findById(transaction.getId()).orElseThrow();
         newTransaction.setName(transaction.getName());
-        newTransaction.setPayBy(transaction.getPayBy());
+        newTransaction.setBy(transaction.getBy());
         newTransaction.setAmount(transaction.getAmount());
         newTransaction.setTip(transaction.getTip());
         newTransaction.setCount(transaction.getCount());

@@ -19,7 +19,7 @@ public class Transaction {
     private Long id;
     private String name;
     private Double amount;
-    private String payBy;
+    private String by;
     private BigDecimal tip;
     private String note;
     private String date;

@@ -17,6 +17,7 @@ public class TransactionServiceImpl implements TransactionService{
     @Override
     public Transaction saveTransaction(User user, Transaction transaction){
         Transaction newTrans = new Transaction();
+
         newTrans.setName(transaction.getName());
         newTrans.setAmount(transaction.getAmount());
         newTrans.setBy(transaction.getBy());

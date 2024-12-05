@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,7 +35,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.formLogin(fl->
                 fl.usernameParameter("username").passwordParameter("password"));
-        http.csrf(csrf->csrf.disable());
+        http.csrf(AbstractHttpConfigurer::disable);
         http.cors(c->c.configurationSource(corsConfigurationSource()));
         http.authorizeHttpRequests(auth->{
             auth.requestMatchers("/auth/**").permitAll();

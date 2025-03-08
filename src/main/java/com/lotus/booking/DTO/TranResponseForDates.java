@@ -9,9 +9,8 @@ public interface TranResponseForDates {
     String getDate();
     int getCount();
     BigDecimal getTip();
-
     Long getId();
-    String getFirst_Name();
-//    String getLast_Name();
     String getEmail();
+    String getBy();
+
 }

@@ -15,4 +15,6 @@ public interface UserService {
     void sendVerificationEmail(User user,String siteURL) throws MessagingException, UnsupportedEncodingException;
     boolean verifyVerificationCode(String code);
     Optional<User> findUserByEmail(User user);
+    public boolean sendVerificationCode(String email) throws MessagingException, UnsupportedEncodingException;
+    public boolean updatePassword(String password, String code);
 }

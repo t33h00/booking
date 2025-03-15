@@ -19,4 +19,12 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query(value="UPDATE Users SET is_enable = TRUE WHERE id = ?1",nativeQuery = true)
     @Modifying
     public void enable(Long id);
+
+    @Query(value="UPDATE users u SET verification_code = ?1 where u.email = ?2",nativeQuery = true)
+    @Modifying
+    public void updateCode(String code, String email);
+
+    @Query(value="UPDATE users u SET password = ?1 where u.email = ?2",nativeQuery = true)
+    @Modifying
+    public void updatePassword(String password, String email);
 }

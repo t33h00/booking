@@ -8,4 +8,5 @@ public class AuthenticationRequest {
     @Email
     private String email;
     private String password;
+    private String code;
 }

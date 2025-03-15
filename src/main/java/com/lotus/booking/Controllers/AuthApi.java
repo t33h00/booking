@@ -1,11 +1,13 @@
 package com.lotus.booking.Controllers;
 
+import com.google.api.Http;
 import com.lotus.booking.Config.JwtUtil;
 import com.lotus.booking.DTO.AuthenticationRequest;
 import com.lotus.booking.DTO.AuthenticationResponse;
 import com.lotus.booking.DTO.TokenValidationRequest;
 import com.lotus.booking.Entity.User;
 import com.lotus.booking.Service.UserService;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
@@ -18,6 +20,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.UnsupportedEncodingException;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
@@ -35,7 +39,7 @@ public class AuthApi {
     public ResponseEntity<?> login(@RequestBody @Validated AuthenticationRequest authenticationRequest){
         try{
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+                    new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail().toLowerCase(), authenticationRequest.getPassword()));
             User user = (User) authentication.getPrincipal();
             String accessToken = jwtUtil.generateAccessToken(user);
             AuthenticationResponse authenticationResponse = new AuthenticationResponse(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(),user.getAuthorities().toString());
@@ -64,4 +68,24 @@ public class AuthApi {
             return "failed";
         }
     }
+
+    @GetMapping("/reset")
+    public ResponseEntity<?> sendCode(@Param("email") String email) throws MessagingException, UnsupportedEncodingException {
+        if(userService.sendVerificationCode(email.toLowerCase())){
+            return new ResponseEntity<>("Found", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Not Found", HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> resetPassword(@RequestBody AuthenticationRequest authenticationRequest){
+        String code = authenticationRequest.getCode();
+        String password = authenticationRequest.getPassword();
+        if(userService.updatePassword(password,code)){
+            System.out.println("Successfully reset the password");
+            return new ResponseEntity<>("Password reset",HttpStatus.ACCEPTED);
+        }
+        return new ResponseEntity<>("Invalid code",HttpStatus.BAD_REQUEST);
+    }
+
 }

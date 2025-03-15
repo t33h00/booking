@@ -21,7 +21,7 @@ public class TransactionApi {
     private UserService userService;
 
     @PostMapping("/transaction")
-    public Transaction saveTransaction(@AuthenticationPrincipal User user,@RequestBody Transaction transaction){
+    public Transaction saveTransaction(@AuthenticationPrincipal User user,@RequestBody Transaction transaction) {
         return transactionService.saveTransaction(user, transaction);
     }
 

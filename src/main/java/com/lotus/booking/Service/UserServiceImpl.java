@@ -8,6 +8,7 @@ import jakarta.validation.ValidationException;
 import jakarta.validation.Validator;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService{
                 newUser.setId(id);
                 newUser.setFirstName(user.getFirstName());
                 newUser.setLastName(user.getLastName());
-                newUser.setEmail(user.getEmail());
+                newUser.setEmail(user.getEmail().toLowerCase());
                 newUser.setRole("USER");
                 newUser.setPassword(passwordEncoder.encode(user.getPassword()));
                 newUser.setEnable(false);
@@ -61,6 +62,20 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+    public boolean updatePassword(String password, String code){
+
+        Optional<User> user = Optional.ofNullable(userRepository.findByVerificationCode(code));
+        if(user.isPresent()){
+            String ePassword = passwordEncoder.encode(password);
+            userRepository.updatePassword(ePassword,user.get().getEmail());
+            System.out.println("password update successfully!");
+            return true;
+        } else {
+            System.out.println("Invalid code");
+            return false;
+        }
+    }
+
     public User findUser(Long id){
         return userRepository.findById(id).orElseThrow(null);
     }
@@ -70,7 +85,7 @@ public class UserServiceImpl implements UserService{
     }
 
     public void sendVerificationEmail(User user,String siteURL) throws MessagingException, UnsupportedEncodingException {
-        User findUser = userRepository.findByEmail(user.getEmail()).orElseThrow();
+        User findUser = userRepository.findByEmail(user.getEmail().toLowerCase()).orElseThrow();
         String verifyURL = siteURL+ "/auth/verify?code=" + findUser.getVerificationCode();
         System.out.println(verifyURL);
         String subject = "Please verify your registration";
@@ -90,14 +105,36 @@ public class UserServiceImpl implements UserService{
         mailSender.send(message);
     }
 
+    public boolean sendVerificationCode(String email) throws MessagingException, UnsupportedEncodingException{
+        Optional<User> user = userRepository.findByEmail(email.toLowerCase());
+        if(user.isPresent()){
+            Random rnd = new Random();
+            int number = rnd.nextInt(999999);
+            String code = String.format("%06d",number);
+            System.out.println("code: " + code);
+            userRepository.updateCode(code,email);
+            String subject = "Account validation!";
+            String senderName = "Lotus Nail and Spa";
+            String mailContent = "<p>Hello, this is the code: " + code + ",</p>";
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+            helper.setFrom("4businessoffice@gmail.com", senderName);
+            helper.setTo(email);
+            helper.setSubject(subject);
+            helper.setText(mailContent,true);
+            mailSender.send(message);
+            return true;
+        }
+        return false;
+    }
+
     public Long idGeneration(){
         Random rnd = new Random();
         return rnd.nextLong(999999);
     }
     @Override
     public Optional<User> findUserByEmail(User user){
-        Optional<User> findUser = userRepository.findByEmail(user.getEmail());
-        return findUser;
+        return userRepository.findByEmail(user.getEmail().toLowerCase());
     }
 
 }

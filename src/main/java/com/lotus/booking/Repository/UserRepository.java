@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -20,9 +21,9 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Modifying
     public void enable(Long id);
 
-    @Query(value="UPDATE users u SET verification_code = ?1 where u.email = ?2",nativeQuery = true)
+    @Query(value="UPDATE users u SET verification_code = ?1, date = ?2 where u.email = ?3",nativeQuery = true)
     @Modifying
-    public void updateCode(String code, String email);
+    public void updateCode(String code, LocalDateTime time, String email);
 
     @Query(value="UPDATE users u SET password = ?1 where u.email = ?2",nativeQuery = true)
     @Modifying

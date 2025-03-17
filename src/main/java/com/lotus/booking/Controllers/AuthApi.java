@@ -6,8 +6,10 @@ import com.lotus.booking.DTO.AuthenticationRequest;
 import com.lotus.booking.DTO.AuthenticationResponse;
 import com.lotus.booking.DTO.TokenValidationRequest;
 import com.lotus.booking.Entity.User;
+import com.lotus.booking.Repository.UserRepository;
 import com.lotus.booking.Service.UserService;
 import jakarta.mail.MessagingException;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
@@ -18,10 +20,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
@@ -33,7 +37,13 @@ public class AuthApi {
     private UserService userService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Validated AuthenticationRequest authenticationRequest){
@@ -80,12 +90,19 @@ public class AuthApi {
     @PutMapping("/update")
     public ResponseEntity<?> resetPassword(@RequestBody AuthenticationRequest authenticationRequest){
         String code = authenticationRequest.getCode();
-        String password = authenticationRequest.getPassword();
-        if(userService.updatePassword(password,code)){
+        User user = userRepository.findByVerificationCode(code);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime timeExpire = user.getDate();
+        String password =passwordEncoder.encode(authenticationRequest.getPassword());
+        if(timeExpire.isAfter(now)){
+            userRepository.updatePassword(password,user.getEmail());
             System.out.println("Successfully reset the password");
             return new ResponseEntity<>("Password reset",HttpStatus.ACCEPTED);
+        } else if (timeExpire.isBefore(LocalDateTime.now())){
+            return new ResponseEntity<>("Time expired!", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>("Invalid code",HttpStatus.BAD_REQUEST);
     }
 
 }
+

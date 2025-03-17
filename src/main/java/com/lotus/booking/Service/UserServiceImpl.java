@@ -14,6 +14,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -42,6 +44,7 @@ public class UserServiceImpl implements UserService{
                 newUser.setEmail(user.getEmail().toLowerCase());
                 newUser.setRole("USER");
                 newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+                newUser.setDate(LocalDateTime.now().plusMinutes(15));
                 newUser.setEnable(false);
                 userRepository.save(newUser);
                 return "user added.";
@@ -63,13 +66,16 @@ public class UserServiceImpl implements UserService{
     }
 
     public boolean updatePassword(String password, String code){
-
+        LocalDateTime now = LocalDateTime.now();
         Optional<User> user = Optional.ofNullable(userRepository.findByVerificationCode(code));
-        if(user.isPresent()){
+        if(user.isPresent() && user.get().getDate().isAfter(now)){
             String ePassword = passwordEncoder.encode(password);
             userRepository.updatePassword(ePassword,user.get().getEmail());
             System.out.println("password update successfully!");
             return true;
+        } else if(user.isPresent() && user.get().getDate().isAfter(now)){
+            System.out.println("Time expired! Try again.");
+            return false;
         } else {
             System.out.println("Invalid code");
             return false;
@@ -93,6 +99,7 @@ public class UserServiceImpl implements UserService{
         String mailContent = "<p>Hello, " + user.getFirstName() + ",</p>";
         mailContent += "<p> Please click the link to verify your registration</p>";
         mailContent +="<a href =\"" + verifyURL + "\">VERIFY</a>";
+        mailContent += "<p>The link will expired in 15 minutes</p>";
         mailContent += "<p>Thank you!</p>";
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -107,15 +114,17 @@ public class UserServiceImpl implements UserService{
 
     public boolean sendVerificationCode(String email) throws MessagingException, UnsupportedEncodingException{
         Optional<User> user = userRepository.findByEmail(email.toLowerCase());
+        LocalDateTime now = LocalDateTime.now();
         if(user.isPresent()){
+            LocalDateTime time = LocalDateTime.now().plusMinutes(15);
             Random rnd = new Random();
             int number = rnd.nextInt(999999);
             String code = String.format("%06d",number);
             System.out.println("code: " + code);
-            userRepository.updateCode(code,email);
-            String subject = "Account validation!";
+            userRepository.updateCode(code,time,email);
+            String subject = "Verification Code";
             String senderName = "Lotus Nail and Spa";
-            String mailContent = "<p>Hello, this is the code: " + code + ",</p>";
+            String mailContent = "<p>Hello, this is the code: " + code + ". It will be expired after 15 minutes.</p>";
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message);
             helper.setFrom("4businessoffice@gmail.com", senderName);

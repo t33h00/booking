@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -31,6 +32,7 @@ public class User implements UserDetails {
     private String firstName;
     private String lastName;
     private String role;
+    private LocalDateTime date;
 
     private boolean isEnable;
 

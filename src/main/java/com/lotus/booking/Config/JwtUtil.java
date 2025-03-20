@@ -1,15 +1,19 @@
 package com.lotus.booking.Config;
 
 import com.lotus.booking.Entity.User;
+
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.function.Function;
+import io.jsonwebtoken.security.Keys;
+import java.security.Key;
 
 @Component
 public class JwtUtil {
@@ -20,6 +24,13 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secret;
 
+    private Key key;
+
+    @PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    }
+
     public String generateAccessToken(User user){
         return Jwts.builder()
                 .setSubject(user.getId() + "," + user.getEmail())
@@ -27,13 +38,13 @@ public class JwtUtil {
                 .claim("roles", user.getRole())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(key,SignatureAlgorithm.HS512)
                 .compact();
     }
 
     public Boolean validateAccessToken(String token){
         try{
-            Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException ex){
             LOGGER.error("JWT expired", ex);
@@ -55,7 +66,7 @@ public class JwtUtil {
 
     public Claims parseClaims(String token){
         return Jwts.parserBuilder()
-                .setSigningKey(secret)
+                .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -71,7 +82,7 @@ public class JwtUtil {
     }
 
     private Claims getAllClaimsFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token).getBody();
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
     public Date getExpirationDateFromToken(String token){
         return getClaimFromToken(token, Claims::getExpiration);

@@ -1,6 +1,5 @@
 package com.lotus.booking.Controllers;
 
-import com.google.api.Http;
 import com.lotus.booking.Config.JwtUtil;
 import com.lotus.booking.DTO.AuthenticationRequest;
 import com.lotus.booking.DTO.AuthenticationResponse;
@@ -9,7 +8,6 @@ import com.lotus.booking.Entity.User;
 import com.lotus.booking.Repository.UserRepository;
 import com.lotus.booking.Service.UserService;
 import jakarta.mail.MessagingException;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;

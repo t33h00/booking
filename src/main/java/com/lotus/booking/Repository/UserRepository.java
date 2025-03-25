@@ -1,5 +1,6 @@
 package com.lotus.booking.Repository;
 
+import com.lotus.booking.DTO.UserResponse;
 import com.lotus.booking.Entity.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,4 +30,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query(value="UPDATE users u SET password = ?1 where u.email = ?2",nativeQuery = true)
     @Modifying
     public void updatePassword(String password, String email);
+
+    @Query(value="SELECT * FROM users u;", nativeQuery = true)
+    List<UserResponse> findAllUsers();
 }

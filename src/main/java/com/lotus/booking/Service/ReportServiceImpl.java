@@ -7,6 +7,8 @@ import com.lotus.booking.Entity.Report;
 import com.lotus.booking.Entity.User;
 import com.lotus.booking.Repository.ReportRepository;
 
+import java.util.List;
+
 @Service
 public class ReportServiceImpl {
     @Autowired
@@ -22,7 +24,7 @@ public class ReportServiceImpl {
             reportRepository.save(newReport);
             System.out.println("Report added.");
         }
-        System.out.println("There is record save for this date.");
+        System.out.println("There was record saved for this date.");
     }
 
     public void updateReport(User user, Report report) {
@@ -40,5 +42,10 @@ public class ReportServiceImpl {
         Report newReport = reportRepository.findByUserIdAndDate(userId,date);
         System.out.println("Report retrieved.");
         return newReport;
+    }
+
+    public List<Report> getReportByMonth(User user, String date){
+        Long userId = user.getId();
+        return reportRepository.getReportByMonth(userId, date);
     }
 }

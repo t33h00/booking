@@ -1,6 +1,5 @@
 package com.lotus.booking.Config;
 
-import com.lotus.booking.Entity.Role;
 import com.lotus.booking.Entity.User;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;

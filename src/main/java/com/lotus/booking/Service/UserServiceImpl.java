@@ -1,5 +1,6 @@
 package com.lotus.booking.Service;
 
+import com.lotus.booking.DTO.UserResponse;
 import com.lotus.booking.Entity.User;
 import com.lotus.booking.Repository.UserRepository;
 import jakarta.mail.MessagingException;
@@ -86,8 +87,8 @@ public class UserServiceImpl implements UserService{
         return userRepository.findById(id).orElseThrow(null);
     }
 
-    public List<User> findAllUser(){
-        return userRepository.findAll();
+    public List<UserResponse> findAllUsers(){
+        return userRepository.findAllUsers();
     }
 
     public void sendVerificationEmail(User user,String siteURL) throws MessagingException, UnsupportedEncodingException {

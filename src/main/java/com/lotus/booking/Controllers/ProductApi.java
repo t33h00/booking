@@ -2,7 +2,6 @@ package com.lotus.booking.Controllers;
 
 import com.lotus.booking.Entity.Products;
 import com.lotus.booking.Repository.ProductRepository;
-import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

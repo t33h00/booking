@@ -44,6 +44,7 @@ public class SecurityConfig {
             auth.requestMatchers("/api/notification/**").permitAll();
             auth.requestMatchers("/api/list/**").permitAll();
             auth.requestMatchers("/api/list/date").permitAll();
+            auth.requestMatchers("/ws").permitAll();
             auth.requestMatchers("/api/**").hasAnyRole("USER","ADMIN");
             auth.requestMatchers("/api/admin/**").hasRole("ADMIN");
             auth.anyRequest().authenticated();

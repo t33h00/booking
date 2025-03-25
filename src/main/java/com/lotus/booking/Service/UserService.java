@@ -1,5 +1,6 @@
 package com.lotus.booking.Service;
 
+import com.lotus.booking.DTO.UserResponse;
 import com.lotus.booking.Entity.User;
 import jakarta.mail.MessagingException;
 
@@ -11,7 +12,7 @@ public interface UserService {
     public String saveUser(User user);
     public User findUser(Long id);
 
-    public List<User> findAllUser();
+    List<UserResponse> findAllUsers();
     void sendVerificationEmail(User user,String siteURL) throws MessagingException, UnsupportedEncodingException;
     boolean verifyVerificationCode(String code);
     Optional<User> findUserByEmail(User user);

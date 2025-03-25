@@ -3,6 +3,7 @@ package com.lotus.booking.Controllers;
 import com.lotus.booking.Config.JwtFilter;
 import com.lotus.booking.Config.SecurityConfig;
 import com.lotus.booking.DTO.AuthenticationResponse;
+import com.lotus.booking.DTO.UserResponse;
 import com.lotus.booking.Entity.User;
 import com.lotus.booking.Service.UserService;
 import jakarta.mail.MessagingException;
@@ -58,8 +59,8 @@ public class UserApi {
     }
 
     @GetMapping("/admin/users")
-    public List<User> getAllUsers(){
-        return userService.findAllUser();
+    public List<UserResponse> getAllUsers(){
+        return userService.findAllUsers();
     }
 
 }

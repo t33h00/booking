@@ -23,8 +23,9 @@ public class ReportServiceImpl {
             newReport.setUser(user);
             reportRepository.save(newReport);
             System.out.println("Report added.");
+        } else {
+            System.out.println("There was record saved for this date.");
         }
-        System.out.println("There was record saved for this date.");
     }
 
     public void updateReport(User user, Report report) {

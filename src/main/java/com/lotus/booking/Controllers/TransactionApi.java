@@ -13,55 +13,54 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
-@RequestMapping("/api")
 public class TransactionApi {
     @Autowired
     private TransactionService transactionService;
     @Autowired
     private UserService userService;
 
-    @PostMapping("/transaction")
+    @PostMapping("/user/transaction")
     public Transaction saveTransaction(@AuthenticationPrincipal User user,@RequestBody Transaction transaction) {
         return transactionService.saveTransaction(user, transaction);
     }
 
     //get transaction details for selected date.
-    @GetMapping("/findbydate")
+    @GetMapping("/user/findbydate")
     public List<Transaction> findAllTransactionByDate(@AuthenticationPrincipal User user,TransactionRequest transactionRequest){
         return transactionService.findTransactionByUserIDAndDate(user, transactionRequest);
     }
 
-    @GetMapping("/findbydate/{date}")
+    @GetMapping("/user/findbydate/{date}")
     public List<Transaction> findAllTransactionByDateParam(@AuthenticationPrincipal User user,@PathVariable("date") String date){
         return transactionService.findTransactionByUserIDAndDateA(user, date);
     }
 
-    @GetMapping("/findall")
+    @GetMapping("/user/findall")
     public List<Transaction> findAllById(@AuthenticationPrincipal User user){
         return transactionService.findAllById(user);
     }
 
-    @GetMapping("/calendarview")
+    @GetMapping("/user/calendarview")
     public List<TranResponse> customView(@AuthenticationPrincipal User user, String date){
         return transactionService.customTransactions(user,date);
     }
 
-    @GetMapping("/transaction")
+    @GetMapping("/user/transaction")
     public TranDetailResponse findTransactionByUserIdAndId(@AuthenticationPrincipal User user, TransactionRequest id){
         return transactionService.findTransactionByUserIdAndId(user, id);
     }
 
-    @PutMapping("/edittransaction")
+    @PutMapping("/user/edittransaction")
     public Transaction updateTransaction(@AuthenticationPrincipal User user, @RequestBody Transaction transaction){
         return transactionService.updateTransaction(transaction);
     }
 
-    @DeleteMapping("/deletetransaction")
+    @DeleteMapping("/user/deletetransaction")
     public String deleteTransaction(@AuthenticationPrincipal User user,TransactionRequest id){
         return  transactionService.deleteTransaction(id);
     }
 
-    @GetMapping("/customdate")
+    @GetMapping("/user/customdate")
     public List<TranResponseForDates> getAllByCustomDate(@AuthenticationPrincipal User user, CustomDateTranRequest customDateTranRequest){
         return transactionService.getAllByCustomDate(user, customDateTranRequest);
     }

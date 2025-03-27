@@ -45,8 +45,8 @@ public class SecurityConfig {
             auth.requestMatchers("/api/list/**").permitAll();
             auth.requestMatchers("/api/list/date").permitAll();
             auth.requestMatchers("/ws").permitAll();
-            auth.requestMatchers("/api/**").hasAnyRole("USER","ADMIN");
-            auth.requestMatchers("/api/admin/**").hasRole("ADMIN");
+            auth.requestMatchers("/user/**").hasAnyRole("USER","ADMIN");
+            auth.requestMatchers("/admin/**").hasRole("ADMIN");
             auth.anyRequest().authenticated();
         });
         http.exceptionHandling(exception-> exception.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED,authException.getMessage())));

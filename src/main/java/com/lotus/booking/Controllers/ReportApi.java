@@ -18,27 +18,26 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
-@RequestMapping("/api")
 public class ReportApi {
     @Autowired
     private ReportServiceImpl reportService;
     
-    @PostMapping("/report")
+    @PostMapping("/user/report")
     public void saveReport(@AuthenticationPrincipal User user, @RequestBody Report report) {
         reportService.saveReport(user, report);
     }
 
-    @PutMapping("/report")
+    @PutMapping("/user/report")
     public void updateReport(@AuthenticationPrincipal User user ,@RequestBody Report report) {
         reportService.updateReport(user, report);
     }
 
-    @GetMapping("/report")
+    @GetMapping("/user/report")
     public Report getReport(@AuthenticationPrincipal User user,String date) {
         return reportService.getReport(user, date);
     }
 
-    @GetMapping("/reportmonth")
+    @GetMapping("/user/reportmonth")
     public List<Report> getReportByMonth(@AuthenticationPrincipal User user, String date){
         return reportService.getReportByMonth(user,date);
     }

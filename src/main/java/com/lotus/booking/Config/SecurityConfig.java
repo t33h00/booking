@@ -81,6 +81,7 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("https://lotus-ui.web.app");
         configuration.addAllowedOrigin("https://lotuscheckin.web.app");
         configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedOrigin("https://lotusnails-67281.web.app");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("*");

@@ -18,4 +18,5 @@ public interface UserService {
     Optional<User> findUserByEmail(User user);
     public boolean sendVerificationCode(String email) throws MessagingException, UnsupportedEncodingException;
     public boolean updatePassword(String password, String code);
+    public void contactEmail(String email,String subject, String content) throws MessagingException, UnsupportedEncodingException;
 }

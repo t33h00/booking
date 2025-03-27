@@ -6,16 +6,14 @@ import com.lotus.booking.Repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.validation.ValidationException;
-import jakarta.validation.Validator;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -25,8 +23,7 @@ import java.util.Random;
 public class UserServiceImpl implements UserService{
     @Autowired
     private JavaMailSender mailSender;
-    @Autowired
-    private Validator validator;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -107,6 +104,21 @@ public class UserServiceImpl implements UserService{
         MimeMessageHelper helper = new MimeMessageHelper(message);
         helper.setFrom("4businessoffice@gmail.com", senderName);
         helper.setTo(user.getEmail());
+        helper.setSubject(subject);
+        helper.setText(mailContent,true);
+
+        mailSender.send(message);
+    }
+
+    public void contactEmail(String email, String subject, String content) throws MessagingException, UnsupportedEncodingException {
+        Optional<User> user = userRepository.findByEmail(email);
+        String senderName = "Lotus Nail and Spa";
+        String mailContent = "<p>Hello " + user.get().getFirstName() + ",</p>";
+        mailContent += content;
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        helper.setFrom("4businessoffice@gmail.com", senderName);
+        helper.setTo(email);
         helper.setSubject(subject);
         helper.setText(mailContent,true);
 

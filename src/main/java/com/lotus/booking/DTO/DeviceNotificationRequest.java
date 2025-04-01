@@ -7,4 +7,6 @@ import lombok.Data;
 public class DeviceNotificationRequest extends NotificationRequest{
     @NotBlank
     private String deviceToken;
+
+    private Long user_id;
 }

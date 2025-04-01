@@ -49,13 +49,17 @@ public class SecurityConfig {
             auth.requestMatchers("/admin/**").hasRole("ADMIN");
             auth.anyRequest().authenticated();
         });
-        http.exceptionHandling(exception-> exception.authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED,authException.getMessage())));
+        http.exceptionHandling(exception-> exception.authenticationEntryPoint((request, response, authException) -> {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, authException.getMessage());
+        }));
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 //        http.requiresChannel(re->re.requestMatchers(r->r.getHeader("X-Forwarded-Proto") !=null).requiresSecure());
         return http.build();
 
     }
+
+
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
@@ -81,6 +85,7 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("https://lotus-ui.web.app");
         configuration.addAllowedOrigin("https://lotuscheckin.web.app");
         configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedOrigin("http://localhost:3001");
         configuration.addAllowedOrigin("https://lotusnails-67281.web.app");
         configuration.addAllowedOrigin("https://lotus-nailsspa.web.app");
         configuration.addAllowedMethod("*");

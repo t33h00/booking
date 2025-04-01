@@ -12,6 +12,7 @@ public class NotificationRequest {
     private String title;
     @NotBlank
     private String body;
+    private Long user_id;
     private String imageUrl;
     private String Urgency;
     private Map<String, String> data = new HashMap<>();

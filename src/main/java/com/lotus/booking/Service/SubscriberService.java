@@ -14,7 +14,7 @@ public class SubscriberService {
     public Subscriber saveSubscriber( Subscriber subscriber){
         try{
             Subscriber newSubscriber = new Subscriber();
-            newSubscriber.setPlatform(subscriber.getPlatform());
+            newSubscriber.setUser_id(subscriber.getUser_id());
             newSubscriber.setToken(subscriber.getToken());
             return subscriberRepository.save(newSubscriber);
         } catch (Exception e){

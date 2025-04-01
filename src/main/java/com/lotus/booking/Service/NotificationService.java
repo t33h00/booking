@@ -9,6 +9,8 @@ import com.lotus.booking.DTO.NotificationSubscriptionRequest;
 import com.lotus.booking.DTO.TopicNotificationRequest;
 import com.lotus.booking.Entity.Subscriber;
 import com.lotus.booking.Repository.SubscriberRepository;
+
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,9 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+
+
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -61,7 +66,7 @@ public class NotificationService {
         log.info("sendNotificationToDevice response: {}", response);
     }
 
-
+    @Transactional
     public void sendMulticastNotification(AllDevicesNotificationRequest request) throws FirebaseMessagingException {
         Map<String, String> headers = new HashMap<>();
         headers.put("Urgency", "high");
@@ -69,8 +74,15 @@ public class NotificationService {
         WebpushFcmOptions webpushFcmOptions = WebpushFcmOptions.builder().setLink("https://lotuscheckin.web.app/list").build();
         WebpushConfig webpushConfig = WebpushConfig.builder().putAllHeaders(headers).setFcmOptions(webpushFcmOptions).build();
 
+        List<Subscriber> allSub = subscriberRepository.findAllByUserId(request.getUser_id());
+        ArrayList<String> allToken = new ArrayList<>();
+
+        for (Subscriber value : allSub) {
+            allToken.add(value.getToken());
+        }
+
         MulticastMessage multicastMessage = MulticastMessage.builder()
-                .addAllTokens(request.getDeviceTokenList().isEmpty() ? getAllDeviceTokens() : request.getDeviceTokenList())
+                .addAllTokens(allToken)
                 .setWebpushConfig(webpushConfig)
                 .setNotification(
                         Notification.builder()
@@ -84,19 +96,26 @@ public class NotificationService {
 
         BatchResponse response = FirebaseMessaging.getInstance(firebaseApp).sendEachForMulticast(multicastMessage);
         List<SendResponse> responses = response.getResponses();
-        List<String> failedToken = new ArrayList<>();
-        if(response.getFailureCount()>0){
-            for(int i=0;i< responses.size();i++){
-                if(!responses.get(i).isSuccessful()){
-                    failedToken.add(request.getDeviceTokenList().get(i));
+        List<String> failedTokens = new ArrayList<>();
+        System.out.println("Failed token count: " + response.getFailureCount());
+
+        if (response.getFailureCount() > 0) {
+            for (int i = 0; i < responses.size(); i++) {
+                if (!responses.get(i).isSuccessful()) {
+                    failedTokens.add(allToken.get(i));
                 }
             }
         }
-        for (String s : failedToken) {
-            Subscriber subscriber =  subscriberRepository.findSubscriberByToken(s);
-            Long id = subscriber.getId();
-            subscriberRepository.deleteById(id);
+
+        // Batch delete all failed tokens
+        if (!failedTokens.isEmpty()) {
+            deleteFailedTokens(failedTokens);
         }
+    }
+
+    @Transactional
+    public void deleteFailedTokens(List<String> failedTokens) {
+        subscriberRepository.deleteAllByTokenIn(failedTokens);
     }
 
     public void subscribeDeviceToTopic(NotificationSubscriptionRequest request) throws FirebaseMessagingException {

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Function;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
@@ -40,6 +41,12 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))
                 .signWith(key,SignatureAlgorithm.HS512)
                 .compact();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<String> getRoles(String token) {
+        Claims claims = parseClaims(token);
+        return claims.get("roles", List.class);
     }
 
     public Boolean validateAccessToken(String token){

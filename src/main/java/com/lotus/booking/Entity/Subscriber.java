@@ -14,7 +14,7 @@ public class Subscriber {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String platform;
+    private Long user_id;
     private String token;
 
 }

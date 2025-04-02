@@ -8,9 +8,8 @@ import java.util.Map;
 
 @Data
 public class NotificationRequest {
-    @NotBlank
+
     private String title;
-    @NotBlank
     private String body;
     private Long user_id;
     private String imageUrl;

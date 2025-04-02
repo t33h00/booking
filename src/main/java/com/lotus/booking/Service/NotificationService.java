@@ -113,7 +113,6 @@ public class NotificationService {
         }
     }
 
-    @Transactional
     public void deleteFailedTokens(List<String> failedTokens) {
         subscriberRepository.deleteAllByTokenIn(failedTokens);
     }

@@ -84,12 +84,12 @@ public class NotificationService {
         MulticastMessage multicastMessage = MulticastMessage.builder()
                 .addAllTokens(allToken)
                 .setWebpushConfig(webpushConfig)
-                .setNotification(
-                        Notification.builder()
-                                .setTitle(request.getTitle())
-                                .setBody(request.getBody())
-                                .setImage(request.getImageUrl())
-                                .build())
+//                .setNotification(
+//                        Notification.builder()
+//                                .setTitle(request.getTitle())
+//                                .setBody(request.getBody())
+//                                .setImage(request.getImageUrl())
+//                                .build())
                 .putAllData(request.getData())
                 .setAndroidConfig(androidConfig)
                 .build();

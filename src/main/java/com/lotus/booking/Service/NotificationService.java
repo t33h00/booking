@@ -71,7 +71,7 @@ public class NotificationService {
         Map<String, String> headers = new HashMap<>();
         headers.put("Urgency", "high");
         AndroidConfig androidConfig = AndroidConfig.builder().setPriority(AndroidConfig.Priority.HIGH).build();
-        WebpushFcmOptions webpushFcmOptions = WebpushFcmOptions.builder().setLink("https://lotuscheckin.web.app/list").build();
+        WebpushFcmOptions webpushFcmOptions = WebpushFcmOptions.builder().setLink("https://lotus-ui.web.app").build();
         WebpushConfig webpushConfig = WebpushConfig.builder().putAllHeaders(headers).setFcmOptions(webpushFcmOptions).build();
 
         List<Subscriber> allSub = subscriberRepository.findAllByUserId(request.getUser_id());

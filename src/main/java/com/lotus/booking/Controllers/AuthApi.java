@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @RestController
 @CrossOrigin(origins = {
@@ -100,6 +101,8 @@ public class AuthApi {
             String token = null;
             if (request.getCookies() != null) {
                 for (Cookie cookie : request.getCookies()) {
+                    System.out.println("Cookie: " + cookie.getName());
+                    System.out.println("Cookie: " + cookie.getValue());
                     if ("JWT".equals(cookie.getName())) {
                         token = cookie.getValue();
                         break;

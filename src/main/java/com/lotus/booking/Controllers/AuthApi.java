@@ -71,7 +71,7 @@ public class AuthApi {
 
             ResponseCookie cookie = ResponseCookie.from("JWT", accessToken)
                     .httpOnly(true)
-                    .secure(false)  // Required for Safari
+                    .secure(true)  // Required for Safari
                     .path("/")
                     .sameSite("None")
                     .maxAge(24 * 60 * 60)// Required for cross-site cookies
@@ -167,12 +167,14 @@ public class AuthApi {
         }
 
         // Clear the cookie
-        Cookie cookie = new Cookie("JWT", null);
-        cookie.setHttpOnly(true); // Match the login cookie
-        cookie.setSecure(true); // Match the login cookie
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from("JWT", null)
+                .httpOnly(true)
+                .secure(true)  // Required for Safari
+                .path("/")
+                .sameSite("None")
+                .maxAge(0)// Required for cross-site cookies
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         return ResponseEntity.ok("Logged out successfully");
     }

@@ -73,7 +73,8 @@ public class AuthApi {
                     .httpOnly(true)
                     .secure(true)  // Required for Safari
                     .path("/")
-                    .sameSite("None")  // Required for cross-site cookies
+                    .sameSite("None")
+                    .maxAge(24 * 60 * 60)// Required for cross-site cookies
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 

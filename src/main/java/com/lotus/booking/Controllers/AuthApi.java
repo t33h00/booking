@@ -63,7 +63,7 @@ public class AuthApi {
             cookie.setSecure(false); // Use true in production (HTTPS)
             cookie.setPath("/");
             cookie.setMaxAge( 24* 60 * 60 ); // 1 day
-            cookie.setAttribute("SameSite", "None"); // Allow cross-origin requests
+//            cookie.setAttribute("SameSite", "None"); // Allow cross-origin requests
             response.addCookie(cookie);
 
             AuthenticationResponse authenticationResponse = new AuthenticationResponse(

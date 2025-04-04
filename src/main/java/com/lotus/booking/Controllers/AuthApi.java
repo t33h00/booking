@@ -30,7 +30,14 @@ import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 
 @RestController
-@CrossOrigin(maxAge = 3600)
+@CrossOrigin(origins = {
+        "https://lotus-ui.web.app",
+        "https://lotuscheckin.web.app",
+        "https://lotusnails-67281.web.app",
+        "https://lotus-nailsspa.web.app",
+        "http://localhost:3000",
+        "http://localhost:3001"
+}, allowCredentials = "true", maxAge = 3600)
 @RequestMapping("/auth")
 public class AuthApi {
     @Autowired

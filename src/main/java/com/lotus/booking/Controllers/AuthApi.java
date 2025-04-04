@@ -96,6 +96,7 @@ public class AuthApi {
 
     @GetMapping("/token")
     public ResponseEntity<?> tokenValidation(HttpServletRequest request) {
+        System.out.println("Cookie include? " + request.getCookies());
         try {
             // Extract JWT from cookies
             String token = null;

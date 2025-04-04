@@ -77,17 +77,16 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);
         configuration.addAllowedOrigin("https://lotus-ui.web.app");
         configuration.addAllowedOrigin("https://lotuscheckin.web.app");
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("http://localhost:3001");
         configuration.addAllowedOrigin("https://lotusnails-67281.web.app");
         configuration.addAllowedOrigin("https://lotus-nailsspa.web.app");
-        configuration.addAllowedOriginPattern("*");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("*");
-        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new
                 UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

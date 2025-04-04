@@ -60,20 +60,20 @@ public class AuthApi {
             System.out.println("Generated JWT: " + accessToken); // Log the generated JWT
 
             // Set JWT as an HTTP-only cookie
-//            Cookie cookie = new Cookie("JWT", accessToken);
-//            cookie.setHttpOnly(true);
-//            cookie.setSecure(true); // Use true in production (HTTPS)
-//            cookie.setPath("/");
-//            cookie.setMaxAge( 24* 60 * 60 ); // 1 day
-//            cookie.setAttribute("sameSite", "None"); // Allow cross-origin requests
-//            response.addCookie(cookie);
-            ResponseCookie cookie = ResponseCookie.from("JWT", accessToken)
-                    .httpOnly(true)
-                    .secure(true)  // Required for Safari
-                    .path("/")
-                    .sameSite("None")  // Required for cross-site cookies
-                    .build();
-            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            Cookie cookie = new Cookie("JWT", accessToken);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true); // Use true in production (HTTPS)
+            cookie.setPath("/");
+            cookie.setMaxAge( 24* 60 * 60 ); // 1 day
+            cookie.setAttribute("SameSite", "None"); // Allow cross-origin requests
+            response.addCookie(cookie);
+//            ResponseCookie cookie = ResponseCookie.from("JWT", accessToken)
+//                    .httpOnly(true)
+//                    .secure(true)  // Required for Safari
+//                    .path("/")
+//                    .sameSite("None")  // Required for cross-site cookies
+//                    .build();
+//            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
             AuthenticationResponse authenticationResponse = new AuthenticationResponse(
                     user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAuthorities().toString());

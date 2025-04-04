@@ -65,8 +65,9 @@ public class AuthApi {
             cookie.setSecure(true); // Use true in production (HTTPS)
             cookie.setPath("/");
             cookie.setMaxAge( 24* 60 * 60 ); // 1 day
-            cookie.setAttribute("SameSite", "None"); // Allow cross-origin requests
+            //cookie.setAttribute("SameSite", "None"); // Allow cross-origin requests
             response.addCookie(cookie);
+            response.addHeader("Set-Cookie", "JWT=" + accessToken + "; Path=/; HttpOnly; Secure; SameSite=None");
 //            ResponseCookie cookie = ResponseCookie.from("JWT", accessToken)
 //                    .httpOnly(true)
 //                    .secure(true)  // Required for Safari

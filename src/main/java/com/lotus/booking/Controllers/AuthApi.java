@@ -71,7 +71,7 @@ public class AuthApi {
 
             ResponseCookie cookie = ResponseCookie.from("JWT", accessToken)
                     .httpOnly(true)
-                    .secure(true)  // Required for Safari
+                    .secure(false)  // Required for Safari
                     .path("/")
                     .sameSite("None")
                     .maxAge(24 * 60 * 60)// Required for cross-site cookies

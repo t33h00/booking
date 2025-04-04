@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TransactionServiceImpl implements TransactionService{
@@ -115,6 +116,11 @@ public class TransactionServiceImpl implements TransactionService{
         Long id = transactionRequest.getId();
         transactionRepository.deleteById(id);
         return "Deleted!";
+    }
+
+    public Optional<Transaction> findTransactionById(Long id){
+        Optional<Transaction> transaction = transactionRepository.findById(id);
+        return transaction;
     }
 
 }

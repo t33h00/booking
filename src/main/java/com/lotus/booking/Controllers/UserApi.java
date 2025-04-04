@@ -17,7 +17,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
 
+import com.lotus.booking.DTO.EmailData; // Update this path if EmailData is in a different package
+
 @RestController
+@CrossOrigin(maxAge = 3600)
 public class UserApi {
     @Autowired
     private UserService userService;
@@ -56,8 +59,11 @@ public class UserApi {
         return userService.findAllUsers();
     }
 
-    @GetMapping("/admin/sendemail")
-    public void sendEmail(@AuthenticationPrincipal User user, String email, String subject, String content) throws UnsupportedEncodingException, MessagingException{
+    @PostMapping("/admin/sendemail")
+    public void sendEmail(@AuthenticationPrincipal User user, @RequestBody EmailData emailData) throws UnsupportedEncodingException, MessagingException{
+        String email = emailData.getEmail();
+        String subject = emailData.getSubject();
+        String content = emailData.getContent();
         userService.contactEmail(email, subject, content);
     }
 

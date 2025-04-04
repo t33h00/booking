@@ -1,23 +1,25 @@
 package com.lotus.booking.Controllers;
 
 import com.lotus.booking.Config.JwtUtil;
+import com.lotus.booking.Config.TokenBlacklist;
 import com.lotus.booking.DTO.AuthenticationRequest;
 import com.lotus.booking.DTO.AuthenticationResponse;
-import com.lotus.booking.DTO.TokenValidationRequest;
 import com.lotus.booking.Entity.User;
 import com.lotus.booking.Repository.UserRepository;
 import com.lotus.booking.Service.UserService;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -43,27 +45,59 @@ public class AuthApi {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private TokenBlacklist tokenBlacklist;
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Validated AuthenticationRequest authenticationRequest){
-        try{
+    public ResponseEntity<?> login(@RequestBody @Validated AuthenticationRequest authenticationRequest, HttpServletResponse response) {
+        try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail().toLowerCase(), authenticationRequest.getPassword()));
             User user = (User) authentication.getPrincipal();
             String accessToken = jwtUtil.generateAccessToken(user);
-            AuthenticationResponse authenticationResponse = new AuthenticationResponse(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(),user.getAuthorities().toString());
-            return ResponseEntity.ok().header(HttpHeaders.AUTHORIZATION,accessToken).body(authenticationResponse);
-        } catch (BadCredentialsException exception){
+            System.out.println("Generated JWT: " + accessToken); // Log the generated JWT
+
+            // Set JWT as an HTTP-only cookie
+            Cookie cookie = new Cookie("JWT", accessToken);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true); // Use true in production (HTTPS)
+            cookie.setPath("/");
+            cookie.setMaxAge(60 ); // 1 day
+            // cookie.setAttribute("SameSite", "None"); // Allow cross-origin requests
+            response.addCookie(cookie);
+
+            AuthenticationResponse authenticationResponse = new AuthenticationResponse(
+                    user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAuthorities().toString());
+            return ResponseEntity.ok(authenticationResponse);
+        } catch (BadCredentialsException exception) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
     @GetMapping("/token")
-    public ResponseEntity<?> tokenValidation(@AuthenticationPrincipal User user, TokenValidationRequest tokenValidationRequest){
-        try{
-            Boolean isValid = (jwtUtil.validateAccessToken(tokenValidationRequest.getToken()));
-            return ResponseEntity.ok(isValid);
-        } catch (Exception e){
-            return ResponseEntity.ok(false);
+    public ResponseEntity<?> tokenValidation(HttpServletRequest request) {
+        try {
+            // Extract JWT from cookies
+            String token = null;
+            if (request.getCookies() != null) {
+                for (Cookie cookie : request.getCookies()) {
+                    if ("JWT".equals(cookie.getName())) {
+                        token = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+
+            // Validate the token
+            if (token != null && jwtUtil.validateAccessToken(token)) {
+                System.out.println("Validated JWT: " + token); // Log the validated JWT
+                return ResponseEntity.ok(true);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
         }
     }
 
@@ -102,5 +136,32 @@ public class AuthApi {
         return new ResponseEntity<>("Invalid code",HttpStatus.BAD_REQUEST);
     }
 
-}
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response, HttpServletRequest request) {
+        // Extract the token from the cookie
+        String token = null;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("JWT".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
 
+        // Add the token to the blacklist
+        if (token != null) {
+            tokenBlacklist.add(token);
+        }
+
+        // Clear the cookie
+        Cookie cookie = new Cookie("JWT", null);
+        cookie.setHttpOnly(true); // Match the login cookie
+        cookie.setSecure(true); // Match the login cookie
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok("Logged out successfully");
+    }
+}

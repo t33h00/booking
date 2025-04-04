@@ -13,6 +13,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
+import com.lotus.booking.DTO.EmailData; // Import the EmailData class
 
 import java.time.LocalDateTime;
 import java.util.List;

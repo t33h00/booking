@@ -4,6 +4,7 @@ import com.lotus.booking.DTO.*;
 import com.lotus.booking.Entity.Transaction;
 import com.lotus.booking.Entity.User;
 import java.util.List;
+import java.util.Optional;
 
 public interface TransactionService {
     Transaction saveTransaction(User user, Transaction transaction);
@@ -32,4 +33,5 @@ public interface TransactionService {
 
     List<TranResponseForDates> aCustomReportByDateAndUserId(CustomDateTranRequest customDateTranRequest);
 
+    Optional<Transaction> findTransactionById(Long id);
 }

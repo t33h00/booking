@@ -1,26 +1,25 @@
 package com.lotus.booking.Config;
 
 import com.lotus.booking.Entity.User;
-
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.SignatureException;
-import jakarta.annotation.PostConstruct;
-
+import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.security.Key;
 import java.util.Date;
 import java.util.List;
+import java.util.Arrays;
 import java.util.function.Function;
-import io.jsonwebtoken.security.Keys;
-import java.security.Key;
 
 @Component
 public class JwtUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtil.class);
-    private static final long EXPIRE_DURATION = 24 * 60 * 60 * 1000;
+    private static final long EXPIRE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
     @Value("${jwt.secret}")
     private String secret;
@@ -29,61 +28,92 @@ public class JwtUtil {
 
     @PostConstruct
     public void init() {
+        if (secret == null || secret.trim().isEmpty()) {
+            throw new IllegalStateException("JWT secret is not configured properly!");
+        }
+        // Initialize the key using the secret
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
+        LOGGER.info("JWT key initialized successfully");
     }
 
-    public String generateAccessToken(User user){
+    public String generateAccessToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getId() + "," + user.getEmail())
                 .setIssuer("Lotus")
-                .claim("roles", user.getRole())
+                .claim("roles", Arrays.asList(user.getRole())) // Ensure user.getRole() returns a List<String>
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRE_DURATION))
-                .signWith(key,SignatureAlgorithm.HS512)
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
     @SuppressWarnings("unchecked")
     public List<String> getRoles(String token) {
         Claims claims = parseClaims(token);
-        return claims.get("roles", List.class);
+        Object roles = claims.get("roles");
+
+        if (roles instanceof String) {
+            // Convert the roles string to a List<String>
+            return Arrays.asList(((String) roles).split(","));
+        } else if (roles instanceof List) {
+            return (List<String>) roles;
+        } else {
+            throw new IllegalArgumentException("Invalid roles format in token");
+        }
     }
 
-    public Boolean validateAccessToken(String token){
-        try{
+    public Boolean validateAccessToken(String token) {
+        if (token == null || token.isEmpty()) {
+            LOGGER.error("Token is null or empty");
+            return false;
+        }
+        try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (ExpiredJwtException ex){
+        } catch (ExpiredJwtException ex) {
             LOGGER.error("JWT expired", ex);
-        } catch (IllegalArgumentException exception){
-            LOGGER.error("Token is null or empty" , exception);
-        } catch (MalformedJwtException ex){
-            LOGGER.error("JWT is invalid", ex );
-        } catch (UnsupportedJwtException ex){
+        } catch (IllegalArgumentException exception) {
+            LOGGER.error("Token is null or empty", exception);
+        } catch (MalformedJwtException ex) {
+            LOGGER.error("JWT is invalid", ex);
+        } catch (UnsupportedJwtException ex) {
             LOGGER.error("JWT is not supported", ex);
-        } catch (SignatureException ex){
+        } catch (io.jsonwebtoken.security.SignatureException ex) {
             LOGGER.error("Signature validation failed", ex);
         }
         return false;
     }
 
-    public String getSubject(String token){
-        return parseClaims(token).getSubject();
+    public String getSubject(String token) {
+        String subject = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+        System.out.println("Subject: " + subject);
+        return subject;
     }
 
-    public Claims parseClaims(String token){
-        return Jwts.parserBuilder()
+    public Claims parseClaims(String token) {
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+        LOGGER.info("Parsed claims: {}", claims);
+        return claims;
     }
 
     public String getUsernameFromToken(String token) {
-        return getClaimFromToken(token, Claims::getSubject);
+        String subject = getClaimFromToken(token, Claims::getSubject);
+        String email = subject.split(",")[1];
+        System.out.println("Subject: " + subject);
+        System.out.println("Extracted Email: " + email);
+        return subject;
     }
 
-    public <T> T getClaimFromToken(String token, Function<Claims,T> claimsResolver){
+    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
@@ -91,13 +121,13 @@ public class JwtUtil {
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
-    public Date getExpirationDateFromToken(String token){
+
+    public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
-    public Boolean isTokenExpired(String token){
+    public Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
-
 }

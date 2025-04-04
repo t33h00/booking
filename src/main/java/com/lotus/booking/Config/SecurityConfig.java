@@ -23,13 +23,16 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
-
 public class SecurityConfig {
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private JwtFilter jwtFilter;
 
+    private final JwtFilter jwtFilter;
+
+    public SecurityConfig(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
+    
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.formLogin(fl->
@@ -38,22 +41,15 @@ public class SecurityConfig {
         http.cors(c->c.configurationSource(corsConfigurationSource()));
         http.authorizeHttpRequests(auth->{
             auth.requestMatchers("/auth/**").permitAll();
-            auth.requestMatchers("/api/save").permitAll();
-            auth.requestMatchers("/api/checkin").permitAll();
-            auth.requestMatchers("/api/subscriber").permitAll();
-            auth.requestMatchers("/api/notification/**").permitAll();
-            auth.requestMatchers("/api/list/**").permitAll();
-            auth.requestMatchers("/api/list/date").permitAll();
-            auth.requestMatchers("/user/**").hasAnyRole("USER","ADMIN");
-            auth.requestMatchers("/admin/**").hasRole("ADMIN");
+            auth.requestMatchers("/api/**").permitAll();
+            auth.requestMatchers("/user/**").hasAnyAuthority("USER", "ADMIN");
+            auth.requestMatchers("/admin/**").hasAuthority("ADMIN");
             auth.anyRequest().authenticated();
         });
         http.exceptionHandling(exception-> exception.authenticationEntryPoint((request, response, authException) -> {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, authException.getMessage());
         }));
-        http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-//        http.requiresChannel(re->re.requestMatchers(r->r.getHeader("X-Forwarded-Proto") !=null).requiresSecure());
         return http.build();
 
     }

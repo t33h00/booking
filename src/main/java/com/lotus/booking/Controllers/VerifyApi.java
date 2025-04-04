@@ -1,7 +1,6 @@
 package com.lotus.booking.Controllers;
 
 import com.lotus.booking.DTO.VerifyRequest;
-import com.lotus.booking.Entity.Report;
 import com.lotus.booking.Entity.Verify;
 import com.lotus.booking.Entity.User;
 import com.lotus.booking.Service.VerifyServiceImpl;

@@ -4,20 +4,17 @@ import com.lotus.booking.DTO.*;
 import com.lotus.booking.Entity.Transaction;
 import com.lotus.booking.Entity.User;
 import com.lotus.booking.Service.TransactionService;
-import com.lotus.booking.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
 public class TransactionApi {
     @Autowired
     private TransactionService transactionService;
-    @Autowired
-    private UserService userService;
 
     @PostMapping("/user/transaction")
     public Transaction saveTransaction(@AuthenticationPrincipal User user,@RequestBody Transaction transaction) {
@@ -87,6 +84,11 @@ public class TransactionApi {
     @GetMapping("/admin/report")
     public List<TranResponseForDates> aCustomReportByDateAndUserId(CustomDateTranRequest customDateTranRequest){
         return transactionService.aCustomReportByDateAndUserId(customDateTranRequest);
+    }
+
+    @GetMapping("/admin/transaction")
+    public Optional<Transaction> findTransactionByUserIdAndId(@AuthenticationPrincipal User user, Long id){
+        return transactionService.findTransactionById(id);
     }
 
 }

@@ -14,7 +14,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -58,13 +60,20 @@ public class AuthApi {
             System.out.println("Generated JWT: " + accessToken); // Log the generated JWT
 
             // Set JWT as an HTTP-only cookie
-            Cookie cookie = new Cookie("JWT", accessToken);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(true); // Use true in production (HTTPS)
-            cookie.setPath("/");
-            cookie.setMaxAge( 24* 60 * 60 ); // 1 day
-            cookie.setAttribute("sameSite", "None"); // Allow cross-origin requests
-            response.addCookie(cookie);
+//            Cookie cookie = new Cookie("JWT", accessToken);
+//            cookie.setHttpOnly(true);
+//            cookie.setSecure(true); // Use true in production (HTTPS)
+//            cookie.setPath("/");
+//            cookie.setMaxAge( 24* 60 * 60 ); // 1 day
+//            cookie.setAttribute("sameSite", "None"); // Allow cross-origin requests
+//            response.addCookie(cookie);
+            ResponseCookie cookie = ResponseCookie.from("JWT", accessToken)
+                    .httpOnly(true)
+                    .secure(true)  // Required for Safari
+                    .path("/")
+                    .sameSite("None")  // Required for cross-site cookies
+                    .build();
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
             AuthenticationResponse authenticationResponse = new AuthenticationResponse(
                     user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAuthorities().toString());

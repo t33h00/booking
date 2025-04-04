@@ -60,10 +60,10 @@ public class AuthApi {
             // Set JWT as an HTTP-only cookie
             Cookie cookie = new Cookie("JWT", accessToken);
             cookie.setHttpOnly(true);
-            cookie.setSecure(false); // Use true in production (HTTPS)
+            cookie.setSecure(true); // Use true in production (HTTPS)
             cookie.setPath("/");
             cookie.setMaxAge( 24* 60 * 60 ); // 1 day
-//            cookie.setAttribute("SameSite", "None"); // Allow cross-origin requests
+            cookie.setAttribute("SameSite", "None"); // Allow cross-origin requests
             response.addCookie(cookie);
 
             AuthenticationResponse authenticationResponse = new AuthenticationResponse(
@@ -157,7 +157,7 @@ public class AuthApi {
         // Clear the cookie
         Cookie cookie = new Cookie("JWT", null);
         cookie.setHttpOnly(true); // Match the login cookie
-        cookie.setSecure(false); // Match the login cookie
+        cookie.setSecure(true); // Match the login cookie
         cookie.setPath("/");
         cookie.setMaxAge(0);
         response.addCookie(cookie);

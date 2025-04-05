@@ -48,33 +48,44 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
 
-        System.out.println("Token: " + token);
+        if (token != null) {
+            try {
+                // System.out.println("Encrypted Token from Cookie: " + token);
 
-        if (token != null && jwtUtil.validateAccessToken(token) && !tokenBlacklist.contains(token)) {
-            String subject = jwtUtil.getSubject(token); // Extract the subject (e.g., "2,t33h00@gmail.com")
-            System.out.println("Subject: " + subject);
+                // Decrypt the token
+                // String decryptToken = CookieEncryptionUtil.decrypt(token);
+                // System.out.println("Decrypted JWT: " + decryptToken);
 
-            // Split the subject to extract the email
-            String[] parts = subject.split(",");
-            if (parts.length != 2) {
-                throw new IllegalArgumentException("Invalid subject format in token");
+                // Validate the decrypted token
+                if (token == null || !token.contains(".") || token.split("\\.").length != 3) {
+                    throw new IllegalArgumentException("Invalid JWT format after decryption");
+                }
+
+                if (jwtUtil.validateAccessToken(token) && !tokenBlacklist.contains(token)) {
+                    String subject = jwtUtil.getSubject(token);
+                    System.out.println("Subject: " + subject);
+
+                    String[] parts = subject.split(",");
+                    if (parts.length != 2) {
+                        throw new IllegalArgumentException("Invalid subject format in token");
+                    }
+                    String email = parts[1];
+                    System.out.println("Extracted Email: " + email);
+
+                    List<SimpleGrantedAuthority> authorities = jwtUtil.getRoles(token).stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .toList();
+
+                    User user = userRepository.findByEmail(email)
+                            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
+
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(user, null, authorities);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            String email = parts[1]; // Extract the email
-            System.out.println("Extracted Email: " + email);
-
-            List<GrantedAuthority> authorities = jwtUtil.getRoles(token).stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .map(authority -> (GrantedAuthority) authority)
-                    .toList();
-
-            // Load the User entity from the database
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
-
-            // Set the User entity as the Principal
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(user, null, authorities);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);

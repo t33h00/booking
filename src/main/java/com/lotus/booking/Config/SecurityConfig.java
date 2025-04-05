@@ -84,6 +84,7 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("https://lotusnails-67281.web.app");
         configuration.addAllowedOrigin("https://lotus-nailsspa.web.app");
         configuration.addAllowedOrigin("https://lotuswages.com");
+        configuration.addAllowedOrigin("https://admin.lotuswages.com");
         configuration.addAllowedOrigin("https://api.lotuswages.com");
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("http://localhost:3001");

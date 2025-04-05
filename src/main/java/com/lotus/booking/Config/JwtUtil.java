@@ -62,7 +62,9 @@ public class JwtUtil {
         }
     }
 
-    public Boolean validateAccessToken(String token) {
+    public Boolean validateAccessToken(String token) throws Exception {
+        // String decryptToken = CookieEncryptionUtil.decrypt(token);
+
         if (token == null || token.isEmpty()) {
             LOGGER.error("Token is null or empty");
             return false;

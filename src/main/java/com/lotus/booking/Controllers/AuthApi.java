@@ -1,5 +1,6 @@
 package com.lotus.booking.Controllers;
 
+import com.lotus.booking.Config.CookieEncryptionUtil;
 import com.lotus.booking.Config.JwtUtil;
 import com.lotus.booking.Config.TokenBlacklist;
 import com.lotus.booking.DTO.AuthenticationRequest;
@@ -28,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 @RestController
 @CrossOrigin(origins = {
@@ -36,6 +36,7 @@ import java.util.Arrays;
         "https://lotuscheckin.web.app",
         "https://lotusnails-67281.web.app",
         "https://lotus-nailsspa.web.app",
+        "https://lotuswages.com",
         "http://localhost:3000",
         "http://localhost:3001"
 }, allowCredentials = "true", maxAge = 3600)
@@ -59,23 +60,16 @@ public class AuthApi {
     private TokenBlacklist tokenBlacklist;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Validated AuthenticationRequest authenticationRequest, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody @Validated AuthenticationRequest authenticationRequest, HttpServletResponse response) throws Exception {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail().toLowerCase(), authenticationRequest.getPassword()));
             User user = (User) authentication.getPrincipal();
             String accessToken = jwtUtil.generateAccessToken(user);
-            System.out.println("Generated JWT: " + accessToken); // Log the generated JWT
+            // System.out.println("Original JWT: " + accessToken);
 
-            // Set JWT as an HTTP-only cookie
-//            Cookie cookie = new Cookie("JWT", accessToken);
-//            cookie.setHttpOnly(true);
-//            cookie.setSecure(true); // Use true in production (HTTPS)
-//            cookie.setPath("/");
-//            cookie.setMaxAge( 24* 60 * 60 ); // 1 day
-//            cookie.setAttribute("SameSite", "None"); // Allow cross-origin requests
-//            response.addCookie(cookie);
-//            response.addHeader("Set-Cookie", "JWT=" + accessToken + "; Path=/; HttpOnly; Secure; SameSite=None");
+            // String encryptedToken = CookieEncryptionUtil.encrypt(accessToken);
+            // System.out.println("Encrypted JWT: " + encryptedToken);
 
             ResponseCookie cookie = ResponseCookie.from("JWT", accessToken)
                     .httpOnly(true)
@@ -102,8 +96,6 @@ public class AuthApi {
             String token = null;
             if (request.getCookies() != null) {
                 for (Cookie cookie : request.getCookies()) {
-                    System.out.println("Cookie: " + cookie.getName());
-                    System.out.println("Cookie: " + cookie.getValue());
                     if ("JWT".equals(cookie.getName())) {
                         token = cookie.getValue();
                         break;
@@ -160,7 +152,7 @@ public class AuthApi {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response, HttpServletRequest request) {
+    public ResponseEntity<?> logout(HttpServletResponse response, HttpServletRequest request) throws Exception {
         // Extract the token from the cookie
         String token = null;
         if (request.getCookies() != null) {
@@ -172,9 +164,11 @@ public class AuthApi {
             }
         }
 
+        String decryptedToken = CookieEncryptionUtil.decrypt(token);
+
         // Add the token to the blacklist
         if (token != null) {
-            tokenBlacklist.add(token);
+            tokenBlacklist.add(decryptedToken);
         }
 
         // Clear the cookie

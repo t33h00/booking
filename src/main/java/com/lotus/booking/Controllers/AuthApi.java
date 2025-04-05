@@ -164,11 +164,9 @@ public class AuthApi {
             }
         }
 
-        String decryptedToken = CookieEncryptionUtil.decrypt(token);
-
         // Add the token to the blacklist
         if (token != null) {
-            tokenBlacklist.add(decryptedToken);
+            tokenBlacklist.add(token);
         }
 
         // Clear the cookie

@@ -36,23 +36,28 @@ public class CheckInServiceImpl implements CheckInService {
         newCheckin.setRequest(checkIn.getRequest());
         checkInRepository.save(newCheckin);
         if(checkIn.getService().contains("Facial")){
-            List<Subscriber> subscribers = subscriberService.getAllSubscriber();
-            List<String> devices = new ArrayList<>();
-            for(Subscriber sub : subscribers){
-                devices.add(sub.getToken());
-            }
-            // Combine all key-value pairs into a single map
-            Map<String, String> data = new HashMap<>();
-            data.put("name", checkIn.getName());
-            data.put("service", checkIn.getService());
-
-            AllDevicesNotificationRequest request = new AllDevicesNotificationRequest();
-            request.setData(data);
-            request.setBody("Name: " + checkIn.getName());
-            request.setDeviceTokenList(devices);
+            AllDevicesNotificationRequest request = getAllDevicesNotificationRequest(checkIn);
             notificationService.sendMulticastNotificationToAll(request);
         }
         return newCheckin.getName();
+    }
+
+    private AllDevicesNotificationRequest getAllDevicesNotificationRequest(CheckIn checkIn) {
+        List<Subscriber> subscribers = subscriberService.getAllSubscriber();
+        List<String> devices = new ArrayList<>();
+        for(Subscriber sub : subscribers){
+            devices.add(sub.getToken());
+        }
+        // Combine all key-value pairs into a single map
+        Map<String, String> data = new HashMap<>();
+        data.put("name", checkIn.getName());
+        data.put("service", checkIn.getService());
+        data.put("request", checkIn.getRequest());
+
+        AllDevicesNotificationRequest request = new AllDevicesNotificationRequest();
+        request.setData(data);
+        request.setDeviceTokenList(devices);
+        return request;
     }
 
     @Override

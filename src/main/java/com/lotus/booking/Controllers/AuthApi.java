@@ -60,22 +60,21 @@ public class AuthApi {
     private TokenBlacklist tokenBlacklist;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Validated AuthenticationRequest authenticationRequest, HttpServletResponse response) throws Exception {
+    public ResponseEntity<?> login(@RequestBody @Validated AuthenticationRequest authenticationRequest, HttpServletResponse response, HttpServletRequest request) throws Exception {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail().toLowerCase(), authenticationRequest.getPassword()));
             User user = (User) authentication.getPrincipal();
             String accessToken = jwtUtil.generateAccessToken(user);
-            // System.out.println("Original JWT: " + accessToken);
 
-            // String encryptedToken = CookieEncryptionUtil.encrypt(accessToken);
-            // System.out.println("Encrypted JWT: " + encryptedToken);
+            String domain = request.getServerName().contains("admin")? "admin.lotuswages.com" : "lotuswages.com";
 
             ResponseCookie cookie = ResponseCookie.from("JWT", accessToken)
                     .httpOnly(true)
                     .secure(true)  // Required for Safari
                     .path("/")
-                    .sameSite("None")
+                    .sameSite("Strict")
+                    .domain(domain)
                     .maxAge(24 * 60 * 60)// Required for cross-site cookies
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -170,14 +169,18 @@ public class AuthApi {
         }
 
         // Clear the cookie
+        String domain = request.getServerName().contains("admin")? "admin.lotuswages.com" : "lotuswages.com";
+
         ResponseCookie cookie = ResponseCookie.from("JWT", null)
                 .httpOnly(true)
                 .secure(true)  // Required for Safari
                 .path("/")
-                .sameSite("None")
+                .sameSite("Strict")
+                .domain(domain)
                 .maxAge(0)// Required for cross-site cookies
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        System.out.println("Logged out!");
 
         return ResponseEntity.ok("Logged out successfully");
     }

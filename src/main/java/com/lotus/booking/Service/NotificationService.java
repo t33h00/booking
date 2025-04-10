@@ -67,7 +67,7 @@ public class NotificationService {
     }
 
     @Transactional
-    public void sendMulticastNotification(AllDevicesNotificationRequest request) throws FirebaseMessagingException {
+    public void sendMulticastNotificationToId(AllDevicesNotificationRequest request) throws FirebaseMessagingException {
         Map<String, String> headers = new HashMap<>();
         headers.put("Urgency", "high");
         AndroidConfig androidConfig = AndroidConfig.builder().setPriority(AndroidConfig.Priority.HIGH).build();
@@ -75,6 +75,52 @@ public class NotificationService {
         WebpushConfig webpushConfig = WebpushConfig.builder().putAllHeaders(headers).setFcmOptions(webpushFcmOptions).build();
 
         List<Subscriber> allSub = subscriberRepository.findAllByUserId(request.getUser_id());
+        ArrayList<String> allToken = new ArrayList<>();
+
+        for (Subscriber value : allSub) {
+            allToken.add(value.getToken());
+        }
+
+        MulticastMessage multicastMessage = MulticastMessage.builder()
+                .addAllTokens(allToken)
+                .setWebpushConfig(webpushConfig)
+//                .setNotification(
+//                        Notification.builder()
+//                                .setTitle(request.getTitle())
+//                                .setBody(request.getBody())
+//                                .setImage(request.getImageUrl())
+//                                .build())
+                .putAllData(request.getData())
+                .setAndroidConfig(androidConfig)
+                .build();
+
+        BatchResponse response = FirebaseMessaging.getInstance(firebaseApp).sendEachForMulticast(multicastMessage);
+        List<SendResponse> responses = response.getResponses();
+        List<String> failedTokens = new ArrayList<>();
+        System.out.println("Failed token count: " + response.getFailureCount());
+
+        if (response.getFailureCount() > 0) {
+            for (int i = 0; i < responses.size(); i++) {
+                if (!responses.get(i).isSuccessful()) {
+                    failedTokens.add(allToken.get(i));
+                }
+            }
+        }
+
+        // Batch delete all failed tokens
+        if (!failedTokens.isEmpty()) {
+            deleteFailedTokens(failedTokens);
+        }
+    }
+
+    public void sendMulticastNotificationToAll(AllDevicesNotificationRequest request) throws FirebaseMessagingException {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Urgency", "high");
+        AndroidConfig androidConfig = AndroidConfig.builder().setPriority(AndroidConfig.Priority.HIGH).build();
+        WebpushFcmOptions webpushFcmOptions = WebpushFcmOptions.builder().setLink("https://lotus-ui.web.app").build();
+        WebpushConfig webpushConfig = WebpushConfig.builder().putAllHeaders(headers).setFcmOptions(webpushFcmOptions).build();
+
+        List<Subscriber> allSub = subscriberRepository.findAll();
         ArrayList<String> allToken = new ArrayList<>();
 
         for (Subscriber value : allSub) {

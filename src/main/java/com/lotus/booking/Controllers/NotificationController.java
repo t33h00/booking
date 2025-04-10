@@ -51,7 +51,7 @@ public class NotificationController {
     @PostMapping("/send-to-all")
     public ResponseEntity<String> sendNotificationToAll(@RequestBody @Valid AllDevicesNotificationRequest request) {
         try {
-            notificationService.sendMulticastNotification(request);
+            notificationService.sendMulticastNotificationToId(request);
             return ResponseEntity.ok("Multicast notification sent successfully.");
         } catch (FirebaseMessagingException e) {
             e.printStackTrace();

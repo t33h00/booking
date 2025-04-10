@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -40,12 +41,16 @@ public class CheckInServiceImpl implements CheckInService {
             for(Subscriber sub : subscribers){
                 devices.add(sub.getToken());
             }
+            // Combine all key-value pairs into a single map
+            Map<String, String> data = new HashMap<>();
+            data.put("name", checkIn.getName());
+            data.put("service", checkIn.getService());
+
             AllDevicesNotificationRequest request = new AllDevicesNotificationRequest();
-            request.setData(Map.of(checkIn.getName(),checkIn.getPhone()));
-            request.setTitle(checkIn.getService() + " (" + checkIn.getAppt() + ")");
+            request.setData(data);
             request.setBody("Name: " + checkIn.getName());
             request.setDeviceTokenList(devices);
-            notificationService.sendMulticastNotification(request);
+            notificationService.sendMulticastNotificationToAll(request);
         }
         return newCheckin.getName();
     }

@@ -5,7 +5,7 @@ import com.lotus.booking.Repository.SubscriberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class SubscriberService {
@@ -25,6 +25,10 @@ public class SubscriberService {
 
     public List<Subscriber> getAllSubscriber(){
         return subscriberRepository.findAll();
+    }
+
+    public List<Subscriber> findAllSubscriberById(Long user_id){
+        return subscriberRepository.findAllByUserId(user_id);
     }
 
     public String deleteSubscriber(String token){

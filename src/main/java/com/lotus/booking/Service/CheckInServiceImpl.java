@@ -4,6 +4,7 @@ import com.lotus.booking.DTO.AllDevicesNotificationRequest;
 import com.lotus.booking.Entity.CheckIn;
 import com.lotus.booking.Entity.Subscriber;
 import com.lotus.booking.Repository.CheckInRepository;
+import org.hibernate.annotations.Check;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,12 @@ public class CheckInServiceImpl implements CheckInService {
         newCheckin.setRequest(checkIn.getRequest());
         checkInRepository.save(newCheckin);
         if(checkIn.getService().contains("Facial")){
-            AllDevicesNotificationRequest request = getAllDevicesNotificationRequest(checkIn);
+            checkIn.setRequest(12L);
+            AllDevicesNotificationRequest request = sendToRequest(checkIn);
+            notificationService.sendMulticastNotificationToAll(request);
+        }
+        if(checkIn.getRequest() != 0){
+            AllDevicesNotificationRequest request = sendToRequest(checkIn);
             notificationService.sendMulticastNotificationToAll(request);
         }
         return newCheckin.getName();
@@ -52,8 +58,24 @@ public class CheckInServiceImpl implements CheckInService {
         Map<String, String> data = new HashMap<>();
         data.put("name", checkIn.getName());
         data.put("service", checkIn.getService());
-        data.put("request", checkIn.getRequest());
+        data.put("app", checkIn.getAppt());
 
+        AllDevicesNotificationRequest request = new AllDevicesNotificationRequest();
+        request.setData(data);
+        request.setDeviceTokenList(devices);
+        return request;
+    }
+
+    private AllDevicesNotificationRequest sendToRequest(CheckIn checkIn){
+        List<Subscriber> subscribers = subscriberService.findAllSubscriberById(checkIn.getRequest());
+        List<String> devices = new ArrayList<>();
+        for(Subscriber sub : subscribers){
+            devices.add(sub.getToken());
+        }
+        Map<String, String> data = new HashMap<>();
+        data.put("name", checkIn.getName());
+        data.put("service", checkIn.getService());
+        data.put("app", checkIn.getAppt());
         AllDevicesNotificationRequest request = new AllDevicesNotificationRequest();
         request.setData(data);
         request.setDeviceTokenList(devices);

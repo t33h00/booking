@@ -120,15 +120,8 @@ public class NotificationService {
         WebpushFcmOptions webpushFcmOptions = WebpushFcmOptions.builder().setLink("https://lotus-ui.web.app").build();
         WebpushConfig webpushConfig = WebpushConfig.builder().putAllHeaders(headers).setFcmOptions(webpushFcmOptions).build();
 
-        List<Subscriber> allSub = subscriberRepository.findAll();
-        ArrayList<String> allToken = new ArrayList<>();
-
-        for (Subscriber value : allSub) {
-            allToken.add(value.getToken());
-        }
-
         MulticastMessage multicastMessage = MulticastMessage.builder()
-                .addAllTokens(allToken)
+                .addAllTokens(request.getDeviceTokenList())
                 .setWebpushConfig(webpushConfig)
 //                .setNotification(
 //                        Notification.builder()
@@ -148,7 +141,7 @@ public class NotificationService {
         if (response.getFailureCount() > 0) {
             for (int i = 0; i < responses.size(); i++) {
                 if (!responses.get(i).isSuccessful()) {
-                    failedTokens.add(allToken.get(i));
+                    failedTokens.add(request.getDeviceTokenList().get(i));
                 }
             }
         }

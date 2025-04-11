@@ -24,7 +24,7 @@ public class CheckIn {
     private String phone;
     private String service;
     private String appt;
-    private String request;
+    private Long request;
     private LocalDateTime date;
     private boolean isServe;
 

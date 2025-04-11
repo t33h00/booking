@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @RestController
 @CrossOrigin(origins = {
@@ -67,15 +68,17 @@ public class AuthApi {
             User user = (User) authentication.getPrincipal();
             String accessToken = jwtUtil.generateAccessToken(user);
 
-            String domain = request.getServerName().contains("admin")? "admin.lotuswages.com" : "lotuswages.com";
+            // Determine the domain and cookie name based on the request
+            String domain = request.getServerName().contains("admin") ? "admin.lotuswages.com" : "lotuswages.com";
+            String cookieName = request.getServerName().contains("admin") ? "JWTa" : "JWT";
 
-            ResponseCookie cookie = ResponseCookie.from("JWT", accessToken)
+            ResponseCookie cookie = ResponseCookie.from(cookieName, accessToken)
                     .httpOnly(true)
                     .secure(true)  // Required for Safari
                     .path("/")
-                    .sameSite("Strict")
+                    .sameSite("None")
                     .domain(domain)
-                    .maxAge(24 * 60 * 60)// Required for cross-site cookies
+                    .maxAge(24 * 60 * 60)
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
@@ -89,7 +92,6 @@ public class AuthApi {
 
     @GetMapping("/token")
     public ResponseEntity<?> tokenValidation(HttpServletRequest request) {
-        System.out.println("Cookie include? " + request.getCookies());
         try {
             // Extract JWT from cookies
             String token = null;
@@ -156,7 +158,7 @@ public class AuthApi {
         String token = null;
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
-                if ("JWT".equals(cookie.getName())) {
+                if ("JWT".equals(cookie.getName()) || "JTWa".equals(cookie.getName())) {
                     token = cookie.getValue();
                     break;
                 }
@@ -170,12 +172,13 @@ public class AuthApi {
 
         // Clear the cookie
         String domain = request.getServerName().contains("admin")? "admin.lotuswages.com" : "lotuswages.com";
+        String cookieName = request.getServerName().contains("admin") ? "JWTa" : "JWT";
 
-        ResponseCookie cookie = ResponseCookie.from("JWT", null)
+        ResponseCookie cookie = ResponseCookie.from(cookieName, null)
                 .httpOnly(true)
                 .secure(true)  // Required for Safari
                 .path("/")
-                .sameSite("Strict")
+                .sameSite("None")
                 .domain(domain)
                 .maxAge(0)// Required for cross-site cookies
                 .build();

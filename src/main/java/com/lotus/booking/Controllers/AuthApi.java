@@ -71,7 +71,7 @@ public class AuthApi {
             // Determine the domain and cookie name based on the request
             String domain = request.getServerName().contains("admin") ? "admin.lotuswages.com" : "lotuswages.com";
             String cookieName = request.getServerName().contains("admin") ? "JWTa" : "JWT";
-
+            System.out.println(cookieName);
             ResponseCookie cookie = ResponseCookie.from(cookieName, accessToken)
                     .httpOnly(true)
                     .secure(true)  // Required for Safari

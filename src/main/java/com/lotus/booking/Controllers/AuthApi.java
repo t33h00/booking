@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
-import java.util.Enumeration;
 
 @RestController
 @CrossOrigin(origins = {
@@ -83,6 +82,7 @@ public class AuthApi {
                     .maxAge(24 * 60 * 60)
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+            System.out.println("Cookie Set: " + cookie.toString());
 
             AuthenticationResponse authenticationResponse = new AuthenticationResponse(
                     user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAuthorities().toString());

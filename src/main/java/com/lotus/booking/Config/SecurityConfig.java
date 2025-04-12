@@ -78,18 +78,17 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true); // ✅ Required for cookies
-        configuration.addAllowedOriginPattern("https://*.web.app"); // ✅ Use wildcard for subdomains
         configuration.addAllowedOrigin("https://lotus-ui.web.app");
         configuration.addAllowedOrigin("https://lotuscheckin.web.app");
         configuration.addAllowedOrigin("https://lotusnails-67281.web.app");
         configuration.addAllowedOrigin("https://lotus-nailsspa.web.app");
-        configuration.addAllowedOrigin("https://lotuswages.com");
-        configuration.addAllowedOrigin("https://admin.lotuswages.com");
+        configuration.addAllowedOrigin("https://*.lotuswages.com");
         configuration.addAllowedOrigin("https://api.lotuswages.com");
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("http://localhost:3001");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
+        configuration.addAllowedHeader("Access-Control-Allow-Origin");
         configuration.addExposedHeader("Set-Cookie"); // ✅ Expose Set-Cookie to frontend
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

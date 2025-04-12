@@ -142,6 +142,6 @@ public class JwtUtil {
     
     public String getCookieName(HttpServletRequest request) {
         String clientDomain = request.getHeader("referer");
-        return (clientDomain != null && clientDomain.toLowerCase().contains("admin")) ? "JWTa" : "JWT";
+        return (clientDomain != null && clientDomain.toLowerCase().contains("admin")) ? "jwt" : "JWT";
     }
 }

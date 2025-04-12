@@ -136,14 +136,12 @@ public class JwtUtil {
     }
 
     public String getDomain(HttpServletRequest request) {
-        String forwardedHost = request.getHeader("X-Forwarded-Host");
-        String host = (forwardedHost != null) ? forwardedHost : request.getServerName();
-        return host.toLowerCase().contains("admin") ? "admin.lotuswages.com" : "lotuswages.com";
+        String clientDomain = request.getHeader("X-Client-Domain");
+        return (clientDomain != null && clientDomain.toLowerCase().contains("admin")) ? "admin.lotuswages.com" : "lotuswages.com";
     }
     
     public String getCookieName(HttpServletRequest request) {
-        String forwardedHost = request.getHeader("X-Forwarded-Host");
-        String host = (forwardedHost != null) ? forwardedHost : request.getServerName();
-        return host.toLowerCase().contains("admin") ? "JWTa" : "JWT";
+        String clientDomain = request.getHeader("X-Client-Domain");
+        return (clientDomain != null && clientDomain.toLowerCase().contains("admin")) ? "JWTa" : "JWT";
     }
 }

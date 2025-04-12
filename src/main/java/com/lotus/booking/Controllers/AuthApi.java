@@ -100,11 +100,17 @@ public class AuthApi {
             System.out.println("Domain: " + domain);
             System.out.println("Cookie Name: " + cookieName);
 
+            // Log all cookies sent in the request
+            if (request.getCookies() != null) {
+                for (Cookie cookie : request.getCookies()) {
+                    System.out.println("Cookie Name: " + cookie.getName() + ", Value: " + cookie.getValue());
+                }
+            }
+
             // Extract the token from the cookies
             String token = null;
             if (request.getCookies() != null) {
                 for (Cookie cookie : request.getCookies()) {
-                    System.out.println("Cookie Found: " + cookie.getName());
                     if (cookieName.equals(cookie.getName())) {
                         token = cookie.getValue();
                         break;
@@ -115,22 +121,11 @@ public class AuthApi {
             System.out.println("Extracted Token: " + token);
 
             // Validate the token
-            if (token != null) {
-                if (domain.contains("admin")) {
-                    System.out.println("Validating admin token (JWTa)");
-                } else {
-                    System.out.println("Validating user token (JWT)");
-                }
-
-                if (jwtUtil.validateAccessToken(token)) {
-                    System.out.println("Validated Token: " + token);
-                    return ResponseEntity.ok(true);
-                } else {
-                    System.out.println("Invalid or expired token");
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
-                }
+            if (token != null && jwtUtil.validateAccessToken(token)) {
+                System.out.println("Validated Token: " + token);
+                return ResponseEntity.ok(true);
             } else {
-                System.out.println("No token found in cookies");
+                System.out.println("Invalid or expired token");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
             }
         } catch (Exception e) {

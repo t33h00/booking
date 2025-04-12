@@ -78,7 +78,7 @@ public class AuthApi {
                     .secure(true)  // Required for Safari
                     .path("/")
                     .sameSite("Strict") // Required for cross-site cookies
-                    .domain(domain)
+                    .domain("admin.lotuswages.com")
                     .maxAge(24 * 60 * 60)
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());

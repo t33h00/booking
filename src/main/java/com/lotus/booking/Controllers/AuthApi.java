@@ -68,12 +68,6 @@ public class AuthApi {
             User user = (User) authentication.getPrincipal();
             String accessToken = jwtUtil.generateAccessToken(user);
 
-            Enumeration<String> headerNames = request.getHeaderNames();
-            while (headerNames.hasMoreElements()) {
-                String headerName = headerNames.nextElement();
-                System.out.println(headerName + ": " + request.getHeader(headerName));
-}
-
             // Determine the domain and cookie name based on the request
             String domain = jwtUtil.getDomain(request);
             String cookieName = jwtUtil.getCookieName(request);
@@ -176,12 +170,6 @@ public class AuthApi {
         if (token != null) {
             tokenBlacklist.add(token);
         }
-
-        Enumeration<String> headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String headerName = headerNames.nextElement();
-            System.out.println(headerName + ": " + request.getHeader(headerName));
-}
 
         // Clear the cookie
         String domain = jwtUtil.getDomain(request);

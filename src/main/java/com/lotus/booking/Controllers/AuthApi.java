@@ -77,7 +77,7 @@ public class AuthApi {
                     .httpOnly(true)
                     .secure(true)  // Required for Safari
                     .path("/")
-                    .sameSite("None")
+                    .sameSite("Strict") // Required for cross-site cookies
                     .domain(domain)
                     .maxAge(24 * 60 * 60)
                     .build();

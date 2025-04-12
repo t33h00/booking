@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.util.Enumeration;
 
 @RestController
 @CrossOrigin(origins = {
@@ -67,10 +68,16 @@ public class AuthApi {
             User user = (User) authentication.getPrincipal();
             String accessToken = jwtUtil.generateAccessToken(user);
 
+            Enumeration<String> headerNames = request.getHeaderNames();
+            while (headerNames.hasMoreElements()) {
+                String headerName = headerNames.nextElement();
+                System.out.println(headerName + ": " + request.getHeader(headerName));
+}
+
             // Determine the domain and cookie name based on the request
             String domain = jwtUtil.getDomain(request);
             String cookieName = jwtUtil.getCookieName(request);
-            System.out.println("Server Name: " + request.getServerName());
+            System.out.println("Client Name: " + domain);
             System.out.println("Cookie Name: " + cookieName);
             ResponseCookie cookie = ResponseCookie.from(cookieName, accessToken)
                     .httpOnly(true)
@@ -170,10 +177,16 @@ public class AuthApi {
             tokenBlacklist.add(token);
         }
 
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            System.out.println(headerName + ": " + request.getHeader(headerName));
+}
+
         // Clear the cookie
-        String domain = request.getServerName().contains("admin")? "admin.lotuswages.com" : "lotuswages.com";
-        String cookieName = request.getServerName().contains("admin") ? "JWTa" : "JWT";
-        System.out.println("Server Name: " + request.getServerName());
+        String domain = jwtUtil.getDomain(request);
+        String cookieName = jwtUtil.getCookieName(request);
+        System.out.println("Server Name: " + domain);
         System.out.println("Cookie Name: " + cookieName);
 
         ResponseCookie cookie = ResponseCookie.from(cookieName, null)

@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 @RestController
 @CrossOrigin(origins = {
@@ -69,9 +68,10 @@ public class AuthApi {
             String accessToken = jwtUtil.generateAccessToken(user);
 
             // Determine the domain and cookie name based on the request
-            String domain = request.getServerName().contains("admin") ? "admin.lotuswages.com" : "lotuswages.com";
-            String cookieName = request.getServerName().contains("admin") ? "JWTa" : "JWT";
-            System.out.println(cookieName);
+            String domain = jwtUtil.getDomain(request);
+            String cookieName = jwtUtil.getCookieName(request);
+            System.out.println("Server Name: " + request.getServerName());
+            System.out.println("Cookie Name: " + cookieName);
             ResponseCookie cookie = ResponseCookie.from(cookieName, accessToken)
                     .httpOnly(true)
                     .secure(true)  // Required for Safari
@@ -97,7 +97,7 @@ public class AuthApi {
             String token = null;
             if (request.getCookies() != null) {
                 for (Cookie cookie : request.getCookies()) {
-                    if ("JWT".equals(cookie.getName())) {
+                    if ("JWT".equals(cookie.getName()) || "JWTa".equals(cookie.getName())) {
                         token = cookie.getValue();
                         break;
                     }
@@ -173,6 +173,8 @@ public class AuthApi {
         // Clear the cookie
         String domain = request.getServerName().contains("admin")? "admin.lotuswages.com" : "lotuswages.com";
         String cookieName = request.getServerName().contains("admin") ? "JWTa" : "JWT";
+        System.out.println("Server Name: " + request.getServerName());
+        System.out.println("Cookie Name: " + cookieName);
 
         ResponseCookie cookie = ResponseCookie.from(cookieName, null)
                 .httpOnly(true)

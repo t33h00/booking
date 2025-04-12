@@ -3,6 +3,8 @@ package com.lotus.booking.Config;
 import com.lotus.booking.Entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -131,5 +133,13 @@ public class JwtUtil {
     public Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
+    }
+
+    public String getDomain(HttpServletRequest request) {
+        return request.getServerName().toLowerCase().contains("admin") ? "admin.lotuswages.com" : "lotuswages.com";
+    }
+    
+    public String getCookieName(HttpServletRequest request) {
+        return request.getServerName().toLowerCase().contains("admin") ? "JWTa" : "JWT";
     }
 }

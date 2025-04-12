@@ -69,10 +69,10 @@ public class AuthApi {
 
             // Determine the domain and cookie name based on the request
             String domain = jwtUtil.getDomain(request);
-            String cookieName = jwtUtil.getCookieName(request);
-            System.out.println("Client Name: " + domain);
-            System.out.println("Cookie Name: " + cookieName);
-            ResponseCookie cookie = ResponseCookie.from(cookieName, accessToken)
+            // String cookieName = jwtUtil.getCookieName(request);
+            // System.out.println("Client Name: " + domain);
+            // System.out.println("Cookie Name: " + cookieName);
+            ResponseCookie cookie = ResponseCookie.from("JWT", accessToken)
                     .httpOnly(true)
                     .secure(true)  // Required for Safari
                     .path("/")
@@ -95,23 +95,23 @@ public class AuthApi {
     public ResponseEntity<?> tokenValidation(HttpServletRequest request) {
         try {
             // Determine the domain and cookie name dynamically
-            String domain = jwtUtil.getDomain(request);
-            String cookieName = jwtUtil.getCookieName(request);
-            System.out.println("Domain: " + domain);
-            System.out.println("Cookie Name: " + cookieName);
+            // String domain = jwtUtil.getDomain(request);
+            // String cookieName = jwtUtil.getCookieName(request);
+            // System.out.println("Domain: " + domain);
+            // System.out.println("Cookie Name: " + cookieName);
 
             // Log all cookies sent in the request
-            if (request.getCookies() != null) {
-                for (Cookie cookie : request.getCookies()) {
-                    System.out.println("Cookie Name: " + cookie.getName() + ", Value: " + cookie.getValue());
-                }
-            }
+            // if (request.getCookies() != null) {
+            //     for (Cookie cookie : request.getCookies()) {
+            //         System.out.println("Cookie Name: " + cookie.getName() + ", Value: " + cookie.getValue());
+            //     }
+            // }
 
             // Extract the token from the cookies
             String token = null;
             if (request.getCookies() != null) {
                 for (Cookie cookie : request.getCookies()) {
-                    if (cookieName.equals(cookie.getName())) {
+                    if ("JWT".equals(cookie.getName())) {
                         token = cookie.getValue();
                         break;
                     }
@@ -122,7 +122,6 @@ public class AuthApi {
 
             // Validate the token
             if (token != null && jwtUtil.validateAccessToken(token)) {
-                System.out.println("Validated Token: " + token);
                 return ResponseEntity.ok(true);
             } else {
                 System.out.println("Invalid or expired token");
@@ -175,7 +174,7 @@ public class AuthApi {
         String token = null;
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
-                if ("JWT".equals(cookie.getName()) || "jwt".equals(cookie.getName())) {
+                if ("JWT".equals(cookie.getName())) {
                     token = cookie.getValue();
                     break;
                 }
@@ -189,11 +188,11 @@ public class AuthApi {
 
         // Clear the cookie
         String domain = jwtUtil.getDomain(request);
-        String cookieName = jwtUtil.getCookieName(request);
-        System.out.println("Server Name: " + domain);
-        System.out.println("Cookie Name: " + cookieName);
+        // String cookieName = jwtUtil.getCookieName(request);
+        // System.out.println("Server Name: " + domain);
+        // System.out.println("Cookie Name: " + cookieName);
 
-        ResponseCookie cookie = ResponseCookie.from(cookieName, null)
+        ResponseCookie cookie = ResponseCookie.from("JWT", null)
                 .httpOnly(true)
                 .secure(true)  // Required for Safari
                 .path("/")

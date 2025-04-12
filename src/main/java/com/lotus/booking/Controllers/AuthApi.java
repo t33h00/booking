@@ -93,29 +93,56 @@ public class AuthApi {
 
     @GetMapping("/token")
     public ResponseEntity<?> tokenValidation(HttpServletRequest request) {
-        try {
-            // Extract JWT from cookies
-            String token = null;
-            if (request.getCookies() != null) {
-                for (Cookie cookie : request.getCookies()) {
-                    if ("JWT".equals(cookie.getName()) || "JWTa".equals(cookie.getName())) {
-                        token = cookie.getValue();
-                        break;
+        if(jwtUtil.getDomain(request).contains("admin")){
+            try {
+                // Extract JWT from cookies
+                String token = null;
+                if (request.getCookies() != null) {
+                    for (Cookie cookie : request.getCookies()) {
+                        if ("JWTa".equals(cookie.getName())) {
+                            token = cookie.getValue();
+                            break;
+                        }
                     }
                 }
-            }
-
-            // Validate the token
-            if (token != null && jwtUtil.validateAccessToken(token)) {
-                System.out.println("Validated JWT: " + token); // Log the validated JWT
-                return ResponseEntity.ok(true);
-            } else {
+    
+                // Validate the token
+                if (token != null && jwtUtil.validateAccessToken(token)) {
+                    System.out.println("Validated JWTa: " + token); // Log the validated JWT
+                    return ResponseEntity.ok(true);
+                } else {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+        } else {
+            try {
+                // Extract JWT from cookies
+                String token = null;
+                if (request.getCookies() != null) {
+                    for (Cookie cookie : request.getCookies()) {
+                        if ("JWT".equals(cookie.getName())) {
+                            token = cookie.getValue();
+                            break;
+                        }
+                    }
+                }
+    
+                // Validate the token
+                if (token != null && jwtUtil.validateAccessToken(token)) {
+                    System.out.println("Validated JWT: " + token); // Log the validated JWT
+                    return ResponseEntity.ok(true);
+                } else {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+            }
         }
+        
     }
 
     @GetMapping("/verify")

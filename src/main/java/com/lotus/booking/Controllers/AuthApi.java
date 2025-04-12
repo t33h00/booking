@@ -175,7 +175,7 @@ public class AuthApi {
         String token = null;
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
-                if ("JWT".equals(cookie.getName()) || "JTWa".equals(cookie.getName())) {
+                if ("JWT".equals(cookie.getName()) || "jwt".equals(cookie.getName())) {
                     token = cookie.getValue();
                     break;
                 }

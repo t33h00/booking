@@ -1,6 +1,5 @@
 package com.lotus.booking.Controllers;
 
-import com.lotus.booking.Config.CookieEncryptionUtil;
 import com.lotus.booking.Config.JwtUtil;
 import com.lotus.booking.Config.TokenBlacklist;
 import com.lotus.booking.DTO.AuthenticationRequest;
@@ -77,8 +76,8 @@ public class AuthApi {
                     .httpOnly(true)
                     .secure(true)  // Required for Safari
                     .path("/")
-                    .sameSite("Strict") // Required for cross-site cookies
-                    .domain("admin.lotuswages.com")
+                    .sameSite("None") // Required for cross-site cookies
+                    .domain(domain)
                     .maxAge(24 * 60 * 60)
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());

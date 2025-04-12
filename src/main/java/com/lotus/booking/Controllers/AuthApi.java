@@ -37,7 +37,7 @@ import java.time.LocalDateTime;
         "https://lotusnails-67281.web.app",
         "https://lotus-nailsspa.web.app",
         "https://lotuswages.com",
-        "https://admin.lotuswages.com/",
+        "https://admin.lotuswages.com",
         "http://localhost:3000",
         "http://localhost:3001"
 }, allowCredentials = "true", maxAge = 3600)

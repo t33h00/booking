@@ -37,9 +37,13 @@ public class CheckInServiceImpl implements CheckInService {
         newCheckin.setRequest(checkIn.getRequest());
         checkInRepository.save(newCheckin);
         if(checkIn.getRequest() != null){
-            if(checkIn.getService().contains("Facial")){
-                checkIn.setRequest(12L);
+            if(checkIn.getService().contains("Facial") && checkIn.getRequest() != 0){
+                List<Subscriber> subscribers = subscriberService.findAllSubscriberById(checkIn.getRequest());
+                subscribers.addAll(subscriberService.findAllSubscriberById(12L));
+                List<String> devices = new ArrayList<>();
+                devices.addAll(subscribers.stream().map(Subscriber::getToken).toList());
                 AllDevicesNotificationRequest request = sendToRequest(checkIn);
+                request.setDeviceTokenList(devices);
                 notificationService.sendMulticastNotificationToAll(request);
             } else if (checkIn.getRequest() != 0){
                 AllDevicesNotificationRequest request = sendToRequest(checkIn);

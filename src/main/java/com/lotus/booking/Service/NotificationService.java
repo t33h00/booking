@@ -114,6 +114,9 @@ public class NotificationService {
     }
 
     public void sendMulticastNotificationToAll(AllDevicesNotificationRequest request) throws FirebaseMessagingException {
+        if(request.getDeviceTokenList() == null || request.getDeviceTokenList().isEmpty()) {
+            return;
+        }
         Map<String, String> headers = new HashMap<>();
         headers.put("Urgency", "high");
         AndroidConfig androidConfig = AndroidConfig.builder().setPriority(AndroidConfig.Priority.HIGH).build();

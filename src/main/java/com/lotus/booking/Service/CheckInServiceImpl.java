@@ -36,14 +36,15 @@ public class CheckInServiceImpl implements CheckInService {
         newCheckin.setAppt(checkIn.getAppt());
         newCheckin.setRequest(checkIn.getRequest());
         checkInRepository.save(newCheckin);
-        if(checkIn.getService().contains("Facial")){
-            checkIn.setRequest(12L);
-            AllDevicesNotificationRequest request = sendToRequest(checkIn);
-            notificationService.sendMulticastNotificationToAll(request);
-        }
-        if(checkIn.getRequest() != 0){
-            AllDevicesNotificationRequest request = sendToRequest(checkIn);
-            notificationService.sendMulticastNotificationToAll(request);
+        if(checkIn.getRequest() != null){
+            if(checkIn.getService().contains("Facial")){
+                checkIn.setRequest(12L);
+                AllDevicesNotificationRequest request = sendToRequest(checkIn);
+                notificationService.sendMulticastNotificationToAll(request);
+            } else if (checkIn.getRequest() != 0){
+                AllDevicesNotificationRequest request = sendToRequest(checkIn);
+                notificationService.sendMulticastNotificationToAll(request);
+            }
         }
         return newCheckin.getName();
     }

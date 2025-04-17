@@ -128,7 +128,6 @@ public class UserServiceImpl implements UserService{
 
     public boolean sendVerificationCode(String email) throws MessagingException, UnsupportedEncodingException{
         Optional<User> user = userRepository.findByEmail(email.toLowerCase());
-        LocalDateTime now = LocalDateTime.now();
         if(user.isPresent()){
             LocalDateTime time = LocalDateTime.now().plusMinutes(15);
             Random rnd = new Random();

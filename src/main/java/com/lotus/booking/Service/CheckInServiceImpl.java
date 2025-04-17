@@ -64,6 +64,7 @@ public class CheckInServiceImpl implements CheckInService {
         data.put("name", checkIn.getName());
         data.put("service", checkIn.getService());
         data.put("app", checkIn.getAppt());
+        data.put("url","https://lotuswages.com");
 
         AllDevicesNotificationRequest request = new AllDevicesNotificationRequest();
         request.setData(data);

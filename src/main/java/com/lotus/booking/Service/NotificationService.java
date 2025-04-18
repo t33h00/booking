@@ -71,7 +71,7 @@ public class NotificationService {
         Map<String, String> headers = new HashMap<>();
         headers.put("Urgency", "high");
         AndroidConfig androidConfig = AndroidConfig.builder().setPriority(AndroidConfig.Priority.HIGH).build();
-        WebpushFcmOptions webpushFcmOptions = WebpushFcmOptions.builder().setLink("https://lotus-ui.web.app").build();
+        WebpushFcmOptions webpushFcmOptions = WebpushFcmOptions.builder().setLink("https://lotuswages.com").build();
         WebpushConfig webpushConfig = WebpushConfig.builder().putAllHeaders(headers).setFcmOptions(webpushFcmOptions).build();
 
         List<Subscriber> allSub = subscriberRepository.findAllByUserId(request.getUser_id());
@@ -84,12 +84,6 @@ public class NotificationService {
         MulticastMessage multicastMessage = MulticastMessage.builder()
                 .addAllTokens(allToken)
                 .setWebpushConfig(webpushConfig)
-//                .setNotification(
-//                        Notification.builder()
-//                                .setTitle(request.getTitle())
-//                                .setBody(request.getBody())
-//                                .setImage(request.getImageUrl())
-//                                .build())
                 .putAllData(request.getData())
                 .setAndroidConfig(androidConfig)
                 .build();
@@ -120,7 +114,7 @@ public class NotificationService {
         Map<String, String> headers = new HashMap<>();
         headers.put("Urgency", "high");
         AndroidConfig androidConfig = AndroidConfig.builder().setPriority(AndroidConfig.Priority.HIGH).build();
-        WebpushFcmOptions webpushFcmOptions = WebpushFcmOptions.builder().setLink("https://lotus-ui.web.app").build();
+        WebpushFcmOptions webpushFcmOptions = WebpushFcmOptions.builder().setLink("https://lotuswages.com").build();
         WebpushConfig webpushConfig = WebpushConfig.builder().putAllHeaders(headers).setFcmOptions(webpushFcmOptions).build();
 
         MulticastMessage multicastMessage = MulticastMessage.builder()

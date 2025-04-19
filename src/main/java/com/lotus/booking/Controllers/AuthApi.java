@@ -67,8 +67,8 @@ public class AuthApi {
             User user = (User) authentication.getPrincipal();
             String accessToken = jwtUtil.generateAccessToken(user);
 
-            // Determine the domain and cookie name based on the request
-            // String domain = jwtUtil.getDomain(request);
+            //Determine the domain and cookie name based on the request
+            String domain = jwtUtil.getDomain(request);
             // String cookieName = jwtUtil.getCookieName(request);
             // System.out.println("Client Name: " + domain);
             // System.out.println("Cookie Name: " + cookieName);
@@ -77,7 +77,7 @@ public class AuthApi {
                     .secure(true)  // Required for Safari
                     .path("/")
                     .sameSite("None") // Required for cross-site cookies
-                    // .domain(domain)
+                    .domain(domain)
                     .maxAge(24 * 60 * 60)
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -187,7 +187,7 @@ public class AuthApi {
         }
 
         // Clear the cookie
-        // String domain = jwtUtil.getDomain(request);
+        String domain = jwtUtil.getDomain(request);
         // String cookieName = jwtUtil.getCookieName(request);
         // System.out.println("Server Name: " + domain);
         // System.out.println("Cookie Name: " + cookieName);
@@ -197,7 +197,7 @@ public class AuthApi {
                 .secure(true)  // Required for Safari
                 .path("/")
                 .sameSite("None")
-                // .domain(domain)
+                .domain(domain)
                 .maxAge(0)// Required for cross-site cookies
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());

@@ -63,14 +63,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 if (jwtUtil.validateAccessToken(token) && !tokenBlacklist.contains(token)) {
                     String subject = jwtUtil.getSubject(token);
-                    System.out.println("Subject: " + subject);
-
                     String[] parts = subject.split(",");
                     if (parts.length != 2) {
                         throw new IllegalArgumentException("Invalid subject format in token");
                     }
                     String email = parts[1];
-                    System.out.println("Extracted Email: " + email);
 
                     List<SimpleGrantedAuthority> authorities = jwtUtil.getRoles(token).stream()
                             .map(SimpleGrantedAuthority::new)

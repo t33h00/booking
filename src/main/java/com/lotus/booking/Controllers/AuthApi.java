@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = {
@@ -78,7 +80,7 @@ public class AuthApi {
                     .path("/")
                     .sameSite("None") // Required for cross-site cookies
                     // .domain(domain)
-                    .maxAge(24 * 60 * 60)
+                    .maxAge(30)
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
             System.out.println("Cookie Set: " + cookie.toString());
@@ -94,19 +96,6 @@ public class AuthApi {
     @GetMapping("/token")
     public ResponseEntity<?> tokenValidation(HttpServletRequest request) {
         try {
-            // Determine the domain and cookie name dynamically
-            // String domain = jwtUtil.getDomain(request);
-            // String cookieName = jwtUtil.getCookieName(request);
-            // System.out.println("Domain: " + domain);
-            // System.out.println("Cookie Name: " + cookieName);
-
-            // Log all cookies sent in the request
-            // if (request.getCookies() != null) {
-            //     for (Cookie cookie : request.getCookies()) {
-            //         System.out.println("Cookie Name: " + cookie.getName() + ", Value: " + cookie.getValue());
-            //     }
-            // }
-
             // Extract the token from the cookies
             String token = null;
             if (request.getCookies() != null) {
@@ -121,15 +110,48 @@ public class AuthApi {
             System.out.println("Extracted Token: " + token);
 
             // Validate the token
-            if (token != null && jwtUtil.validateAccessToken(token)) {
-                return ResponseEntity.ok(true);
-            } else {
-                System.out.println("Invalid or expired token");
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+            if (token != null) {
+                try {
+                    if (jwtUtil.validateAccessToken(token)) {
+                        // Extract user details from the token
+                        String email = jwtUtil.getEmailFromToken(token);
+                        User user = userRepository.findByEmail(email).orElse(null);
+                        if (user != null) {
+                            // Create a response object with validation status and user details
+                            Map<String, Object> response = new HashMap<>();
+                            response.put("valid", true);
+                            response.put("user", new AuthenticationResponse(
+                                    user.getId(),
+                                    user.getEmail(),
+                                    user.getFirstName(),
+                                    user.getLastName(),
+                                    user.getAuthorities().toString()
+                            ));
+                            return ResponseEntity.ok(response);
+                        }
+                    }
+                } catch (io.jsonwebtoken.ExpiredJwtException e) {
+                    // Handle expired token
+                    System.out.println("Token expired: " + e.getMessage());
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("valid", false);
+                    response.put("error", "Token expired");
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+                }
             }
+
+            // If the token is invalid or not found
+            Map<String, Object> response = new HashMap<>();
+            response.put("valid", false);
+            response.put("error", "Invalid or missing token");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+            Map<String, Object> response = new HashMap<>();
+            response.put("valid", false);
+            response.put("error", "An error occurred");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 

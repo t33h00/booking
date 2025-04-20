@@ -117,6 +117,14 @@ public class JwtUtil {
         return subject;
     }
 
+    public String getEmailFromToken(String token) {
+        String subject = getClaimFromToken(token, Claims::getSubject);
+        String email = subject.split(",")[1];
+        System.out.println("Subject: " + subject);
+        System.out.println("Extracted Email: " + email);
+        return email;
+    }
+
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);

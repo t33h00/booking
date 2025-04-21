@@ -80,10 +80,9 @@ public class AuthApi {
                     .path("/")
                     .sameSite("None") // Required for cross-site cookies
                     // .domain(domain)
-                    .maxAge(30)
+                    .maxAge(24 * 60 * 60)
                     .build();
             response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-            System.out.println("Cookie Set: " + cookie.toString());
 
             AuthenticationResponse authenticationResponse = new AuthenticationResponse(
                     user.getId(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getAuthorities().toString());

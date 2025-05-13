@@ -30,7 +30,7 @@ public class CheckInApi {
     private final Map<String, Long> tokenStore = new HashMap<>();
 
     private final String FORM_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSfSPwGr9un-2Zqh-t2jRybul-zY8CgRPBm1paOGmKwa3daI5w/formResponse";
-    private final String FORM_URL_LY = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdWSn2gPNivqxcd4ZrdLoxr3KABGc8_O9aQmfupRV-HjTmd4Q/formResponse?";
+    private final String FORM_URL_LY = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdWSn2gPNivqxcd4ZrdLoxr3KABGc8_O9aQmfupRV-HjTmd4Q/formResponse";
 
     @PostMapping("/checkin")
     public String saveCheckIn(@RequestBody CheckIn checkIn) throws FirebaseMessagingException, ExecutionException, InterruptedException {
@@ -47,6 +47,7 @@ public class CheckInApi {
 
         // Remove trailing "&"
         String finalUrl = FORM_URL + queryParams.substring(0, queryParams.length() - 1);
+        System.out.println(finalUrl);
 
         try {
             // Send GET request to Google Forms

@@ -9,14 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.time.Instant;
 
 @RestController
 @CrossOrigin(maxAge = 3600)
@@ -30,39 +29,33 @@ public class CheckInApi {
 
     private final Map<String, Long> tokenStore = new HashMap<>();
 
+    private final String FORM_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSfSPwGr9un-2Zqh-t2jRybul-zY8CgRPBm1paOGmKwa3daI5w/formResponse";
+    private final String FORM_URL_LY = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdWSn2gPNivqxcd4ZrdLoxr3KABGc8_O9aQmfupRV-HjTmd4Q/formResponse?";
+
     @PostMapping("/checkin")
     public String saveCheckIn(@RequestBody CheckIn checkIn) throws FirebaseMessagingException, ExecutionException, InterruptedException {
         return checkInService.saveCheckInRecord(checkIn);
     }
 
-    // @GetMapping("/generate-link")
-    // public ResponseEntity<Map<String, String>> generateLink() {
-    //     String baseURL = "https://api.lotuswages.com";
-    //     String token = UUID.randomUUID().toString();
-    //     long expirationTime = Instant.now().getEpochSecond() + 300; // 5 minutes from now
-    //     tokenStore.put(token, expirationTime);
+    @PostMapping("/submit")
+    public ResponseEntity<String> submitForm(@RequestBody Map<String, String> formData) {
+        RestTemplate restTemplate = new RestTemplate();
 
-    //     String link = baseURL + "/api/validate-link?token=" + token;
-    //     System.out.println(link);
-    //     Map<String, String> response = new HashMap<>();
-    //     response.put("link", link);
-    //     return ResponseEntity.ok(response);
-    // }
+        // Build query parameters
+        StringBuilder queryParams = new StringBuilder("?");
+        formData.forEach((key, value) -> queryParams.append(key).append("=").append(value).append("&"));
 
-    // @GetMapping("/validate-link")
-    // public ResponseEntity<Void> validateLink(@RequestParam String token) {
-    //     Long expirationTime = tokenStore.get(token);
+        // Remove trailing "&"
+        String finalUrl = FORM_URL + queryParams.substring(0, queryParams.length() - 1);
 
-    //     if (expirationTime == null || Instant.now().getEpochSecond() > expirationTime) {
-    //         return ResponseEntity.status(302) // HTTP 302 Found
-    //                 .header("Location", "/expired") // Redirect to /expired
-    //                 .build();
-    //     }
-
-    //     return ResponseEntity.status(302) // HTTP 302 Found
-    //             .header("Location", "/checkin") // Redirect to /checkin
-    //             .build();
-    // }
+        try {
+            // Send GET request to Google Forms
+            restTemplate.getForObject(finalUrl, String.class);
+            return ResponseEntity.ok("Form submitted successfully!");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error submitting form: " + e.getMessage());
+        }
+    }
 
     @PostMapping("/subscriber")
     public Subscriber saveSubscriber(@RequestBody Subscriber subscriber){

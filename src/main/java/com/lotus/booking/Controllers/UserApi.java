@@ -25,7 +25,7 @@ public class UserApi {
     @Autowired
     private UserService userService;
 
-    @PostMapping("save")
+    @PostMapping("/api/save")
     public ResponseEntity<?> saveUser(@RequestBody User user, HttpServletRequest request) throws MessagingException, UnsupportedEncodingException {
         Optional<User> findUser = userService.findUserByEmail(user);
         if (findUser.isPresent()){

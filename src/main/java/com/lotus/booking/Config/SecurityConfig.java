@@ -85,6 +85,7 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("https://admin.lotuswages.com");
         configuration.addAllowedOrigin("https://lotuswages.com");
         configuration.addAllowedOrigin("https://api.lotuswages.com");
+        configuration.addAllowedOrigin("https://api1.lotuswages.com");
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("http://localhost:3001");
         configuration.addAllowedMethod("*");
